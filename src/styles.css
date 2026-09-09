@@ -1203,6 +1203,10 @@ button:active, a.btn:active, .chip:active, .card:active {
     width: 100%;
   }
 
+  .cart-drawer-footer {
+    padding-bottom: max(24px, calc(74px + env(safe-area-inset-bottom)));
+  }
+
   /* Hero Section scaling */
   .hero .inner {
     padding: 50px 0 60px;
