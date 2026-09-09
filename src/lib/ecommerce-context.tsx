@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { products as INITIAL_PRODUCTS, type Product } from "@/data/products";
 
 export type OrderRecord = {
