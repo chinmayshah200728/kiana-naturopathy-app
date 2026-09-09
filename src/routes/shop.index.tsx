@@ -1,11 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import { ProductCard } from "@/components/site/ProductCard";
 import { PageHead } from "@/components/site/SiteLayout";
 import { products } from "@/data/products";
 import { HEALTH_BUNDLES } from "@/data/bundles";
 import { RemedyQuizModal } from "@/components/ecommerce/RemedyQuizModal";
+import { CustomComboBuilder } from "@/components/CustomComboBuilder";
+import {
+  loadSavedCustomCombos,
+  deleteCustomComboFromStorage,
+  calculateComboDiscount,
+  type CustomCombo,
+} from "@/data/custom-combos";
 import { formatINR, useCart } from "@/lib/cart";
 import { useECommerce } from "@/lib/ecommerce-context";
 
@@ -42,6 +49,16 @@ function ShopPage() {
   const [maxPrice, setMaxPrice] = useState<number>(2000);
   const [gridCols, setGridCols] = useState<"g4" | "g2">("g4");
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isComboBuilderOpen, setIsComboBuilderOpen] = useState(false);
+  const [savedCombos, setSavedCombos] = useState<CustomCombo[]>([]);
+
+  const refreshSavedCombos = () => {
+    setSavedCombos(loadSavedCustomCombos());
+  };
+
+  useEffect(() => {
+    refreshSavedCombos();
+  }, []);
 
   const displayProducts = useMemo(() => productsList || products, [productsList]);
   const activeCategoriesList = useMemo(() => categoriesList.length > 0 ? categoriesList : Array.from(new Set(displayProducts.map(p => p.category))), [categoriesList, displayProducts]);
@@ -183,6 +200,152 @@ function ShopPage() {
                 );
               })}
             </div>
+
+            {/* Build Your Own Custom Combo Hero Banner */}
+            <div
+              style={{
+                marginTop: 24,
+                padding: "24px 28px",
+                background: "linear-gradient(135deg, #064E3B 0%, #047857 100%)",
+                borderRadius: 14,
+                color: "#ffffff",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 16,
+                boxShadow: "var(--shadow-md)",
+              }}
+            >
+              <div>
+                <span
+                  style={{
+                    fontSize: ".78rem",
+                    letterSpacing: "1px",
+                    textTransform: "uppercase",
+                    color: "#FDE68A",
+                    fontWeight: 700,
+                  }}
+                >
+                  Interactive Health Box Builder
+                </span>
+                <h3 style={{ margin: "4px 0 6px", fontSize: "1.35rem", color: "#ffffff" }}>
+                  🎨 Build Your Own Custom Health Combo (Save up to 25% OFF)
+                </h3>
+                <p style={{ margin: 0, fontSize: ".88rem", opacity: 0.9, maxWidth: 580 }}>
+                  Select any 2 to 4+ natural remedies from our catalog. Get <strong>15% OFF for 2 items</strong>, <strong>20% OFF for 3 items</strong>, or <strong>25% OFF for 4+ items</strong>!
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="btn btn-gold btn-lg"
+                onClick={() => setIsComboBuilderOpen(true)}
+                style={{
+                  padding: "12px 24px",
+                  fontSize: "1rem",
+                  fontWeight: 700,
+                  boxShadow: "0 4px 14px rgba(0,0,0,0.2)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                🎨 Build Custom Combo Now →
+              </button>
+            </div>
+
+            {/* User Saved Custom Combos */}
+            {savedCombos.length > 0 && (
+              <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1px dashed var(--line-gold)" }}>
+                <h4 style={{ margin: "0 0 14px", color: "var(--emerald-900)", fontSize: "1.05rem" }}>
+                  💾 Your Saved Custom Combos ({savedCombos.length})
+                </h4>
+                <div className="grid g3" style={{ gap: 16 }}>
+                  {savedCombos.map((combo) => {
+                    const rawTotal = combo.items.reduce((sum, item) => sum + item.price, 0);
+                    const { discountPercent, finalPrice, discountAmount } = calculateComboDiscount(
+                      combo.items.length,
+                      rawTotal
+                    );
+
+                    return (
+                      <div
+                        key={combo.id}
+                        style={{
+                          padding: 16,
+                          borderRadius: 12,
+                          border: "1px solid var(--line-gold)",
+                          backgroundColor: "#ffffff",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                            <h5 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>{combo.title}</h5>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = deleteCustomComboFromStorage(combo.id);
+                                setSavedCombos(updated);
+                              }}
+                              style={{ background: "none", border: "none", color: "#9CA3AF", cursor: "pointer", fontSize: ".85rem" }}
+                              title="Delete Combo"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+
+                          <span className="badge badge-green" style={{ fontSize: ".72rem", marginBottom: 10, display: "inline-block" }}>
+                            {discountPercent}% OFF ({combo.items.length} Products)
+                          </span>
+
+                          <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+                            {combo.items.slice(0, 4).map((item) => (
+                              <img
+                                key={item.slug}
+                                src={item.image}
+                                alt={item.name}
+                                title={item.name}
+                                style={{ width: 36, height: 36, objectFit: "cover", borderRadius: 6, border: "1px solid #E2E8F0" }}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
+                            <strong style={{ fontSize: "1.1rem", color: "var(--emerald-900)" }}>{formatINR(finalPrice)}</strong>
+                            <s style={{ fontSize: ".82rem", color: "#9CA3AF" }}>{formatINR(rawTotal)}</s>
+                            <span style={{ fontSize: ".76rem", color: "#047857", fontWeight: 700 }}>Save {formatINR(discountAmount)}</span>
+                          </div>
+
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-block btn-sm"
+                            onClick={() => {
+                              const itemsDesc = combo.items.map((i) => i.name).join(" + ");
+                              add(
+                                {
+                                  slug: `custom-combo-${Date.now()}`,
+                                  name: `🎨 ${combo.title} (${combo.items.length} Items: ${itemsDesc})`,
+                                  price: finalPrice,
+                                  image: combo.items[0]?.image || "/images/products/detox-kit.jpg",
+                                },
+                                1
+                              );
+                              setIsCartDrawerOpen(true);
+                            }}
+                          >
+                            🛒 Re-Order Custom Combo →
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Top Bar Controls */}
@@ -381,6 +544,13 @@ function ShopPage() {
 
       {/* Quiz Modal */}
       <RemedyQuizModal isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
+
+      {/* Custom Combo Builder Modal */}
+      <CustomComboBuilder
+        isOpen={isComboBuilderOpen}
+        onClose={() => setIsComboBuilderOpen(false)}
+        onComboSaved={refreshSavedCombos}
+      />
     </>
   );
 }

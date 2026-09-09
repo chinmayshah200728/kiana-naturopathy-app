@@ -8,6 +8,7 @@ import { RemedyQuizModal } from "../ecommerce/RemedyQuizModal";
 const NAV = [
   { to: "/", label: "Home" },
   { to: "/shop", label: "Shop" },
+  { to: "/shop", label: "🎨 Custom Combos" },
   { to: "/naturopathy", label: "Naturopathy" },
   { to: "/conditions", label: "Conditions" },
   { to: "/blog", label: "Blog" },
