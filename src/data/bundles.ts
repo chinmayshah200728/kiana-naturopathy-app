@@ -92,7 +92,7 @@ export const HEALTH_BUNDLES: HealthBundle[] = [
         slug: "neem-oil-skin",
         name: "Cold-Pressed Virgin Neem Oil",
         price: 389,
-        image: "/assets/img/p-skincare.jpg",
+        image: "/assets/img/p-oils.jpg",
       },
       {
         slug: "tulsi-green-tea",

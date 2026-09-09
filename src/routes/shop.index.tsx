@@ -168,9 +168,9 @@ function ShopPage() {
 
                       <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
                         {bundle.items.map((item) => (
-                          <div key={item.slug} style={{ textAlign: "center", flex: 1 }}>
-                            <img src={item.image} alt={item.name} style={{ width: "100%", height: 50, objectFit: "cover", borderRadius: 6, border: "1px solid var(--line-gold)" }} />
-                            <span style={{ fontSize: ".72rem", display: "block", marginTop: 2, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.name}</span>
+                          <div key={item.slug} style={{ textAlign: "center", flex: "1 1 0px", minWidth: 0 }}>
+                            <img src={item.image} alt={item.name} style={{ width: "100%", height: 60, objectFit: "cover", borderRadius: 8, border: "1px solid var(--line-gold)", display: "block" }} />
+                            <span style={{ fontSize: ".72rem", display: "block", marginTop: 4, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={item.name}>{item.name}</span>
                           </div>
                         ))}
                       </div>
