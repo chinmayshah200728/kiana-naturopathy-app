@@ -1,29 +1,55 @@
-import { useEffect, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { PageHead } from "@/components/site/SiteLayout";
-import { formatINR } from "@/lib/cart";
-import { useECommerce } from "@/lib/ecommerce-context";
+const REGISTERED_USERS_KEY = "kiana-registered-users-v1";
 
-export const Route = createFileRoute("/account")({
-  head: () => ({
-    meta: [
-      { title: "My Account & Orders — Kiana Naturopathy" },
-      { name: "description", content: "View past orders, track shipments, and manage health consultation appointments." },
-    ],
-  }),
-  component: AccountPage,
-});
+interface RegisteredUser {
+  name: string;
+  email: string;
+  phone: string;
+  address?: string;
+  password?: string;
+}
+
+function getRegisteredUsers(): RegisteredUser[] {
+  try {
+    const raw = window.localStorage.getItem(REGISTERED_USERS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveRegisteredUser(user: RegisteredUser) {
+  try {
+    const existing = getRegisteredUsers();
+    const filtered = existing.filter(
+      (u) => u.email.toLowerCase() !== user.email.toLowerCase() && u.phone !== user.phone
+    );
+    const updated = [user, ...filtered];
+    window.localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(updated));
+  } catch {
+    /* ignore */
+  }
+}
 
 function AccountPage() {
   const { ordersHistory, bookings, customerUser, loginCustomer, logoutCustomer } = useECommerce();
   const [activeTab, setActiveTab] = useState<"orders" | "consultations" | "profile">("orders");
 
-  // Sign-in form state
-  const [authName, setAuthName] = useState("");
-  const [authEmail, setAuthEmail] = useState("");
-  const [authPhone, setAuthPhone] = useState("");
-  const [authAddress, setAuthAddress] = useState("");
-  const [authPassword, setAuthPassword] = useState("");
+  // Auth screen mode: "login" vs "register"
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+
+  // Sign In form state
+  const [loginIdentity, setLoginIdentity] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  // Create Account form state
+  const [regName, setRegName] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regPhone, setRegPhone] = useState("");
+  const [regAddress, setRegAddress] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+  const [regConfirmPassword, setRegConfirmPassword] = useState("");
+  const [regError, setRegError] = useState("");
 
   // Profile editing state for logged-in user
   const [profileName, setProfileName] = useState("");
@@ -42,27 +68,106 @@ function AccountPage() {
     }
   }, [customerUser]);
 
-  const handleCustomerLoginSubmit = (e: React.FormEvent) => {
+  // Handle Login submission
+  const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!authName.trim() || !authEmail.trim() || !authPhone.trim()) return;
+    setLoginError("");
 
+    const identity = loginIdentity.trim();
+    const pwd = loginPassword.trim();
+
+    if (!identity || !pwd) {
+      setLoginError("Please fill in both email/phone and password.");
+      return;
+    }
+
+    const registeredList = getRegisteredUsers();
+    const foundUser = registeredList.find(
+      (u) =>
+        u.email.toLowerCase() === identity.toLowerCase() ||
+        u.phone.replace(/\D/g, "") === identity.replace(/\D/g, "")
+    );
+
+    if (foundUser) {
+      if (foundUser.password && foundUser.password !== pwd) {
+        setLoginError("Incorrect password. Please try again or create a new account.");
+        return;
+      }
+      loginCustomer({
+        name: foundUser.name,
+        email: foundUser.email,
+        phone: foundUser.phone,
+        address: foundUser.address || "",
+      });
+      return;
+    }
+
+    // If no existing user found in registered list, create user session with identity details
+    const derivedName = identity.includes("@") ? identity.split("@")[0] : `Customer (${identity})`;
+    const isEmail = identity.includes("@");
+    const newUser: RegisteredUser = {
+      name: derivedName.charAt(0).toUpperCase() + derivedName.slice(1),
+      email: isEmail ? identity : `${identity.replace(/\D/g, "")}@kianacustomer.com`,
+      phone: isEmail ? "+91 98765 43210" : identity,
+      password: pwd,
+    };
+    saveRegisteredUser(newUser);
     loginCustomer({
-      name: authName.trim(),
-      email: authEmail.trim(),
-      phone: authPhone.trim(),
-      address: authAddress.trim(),
+      name: newUser.name,
+      email: newUser.email,
+      phone: newUser.phone,
+      address: "",
+    });
+  };
+
+  // Handle Create Account submission
+  const handleRegisterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setRegError("");
+
+    if (!regName.trim() || !regEmail.trim() || !regPhone.trim() || !regPassword.trim()) {
+      setRegError("Please complete all required fields (*).");
+      return;
+    }
+
+    if (regPassword !== regConfirmPassword) {
+      setRegError("Passwords do not match. Please check and try again.");
+      return;
+    }
+
+    if (regPassword.length < 4) {
+      setRegError("Password must be at least 4 characters long.");
+      return;
+    }
+
+    const newUser: RegisteredUser = {
+      name: regName.trim(),
+      email: regEmail.trim(),
+      phone: regPhone.trim(),
+      address: regAddress.trim(),
+      password: regPassword.trim(),
+    };
+
+    saveRegisteredUser(newUser);
+    loginCustomer({
+      name: newUser.name,
+      email: newUser.email,
+      phone: newUser.phone,
+      address: newUser.address,
     });
   };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerUser) return;
-    loginCustomer({
+    const updatedUser = {
       name: profileName.trim(),
       email: profileEmail.trim(),
       phone: profilePhone.trim(),
       address: profileAddress.trim(),
-    });
+    };
+    loginCustomer(updatedUser);
+    saveRegisteredUser(updatedUser);
     setProfileSavedMsg(true);
     setTimeout(() => setProfileSavedMsg(false), 3500);
   };
@@ -76,102 +181,290 @@ function AccountPage() {
       )
     : [];
 
-  // Display all orders if customer placed them in this session or list myOrders
   const displayedOrders = myOrders.length > 0 ? myOrders : ordersHistory;
 
-  // Unauthenticated Customer Screen (Sign-In Required)
+  // Unauthenticated Customer Screen (Sign In / Create Account Switcher)
   if (!customerUser) {
     return (
       <>
         <PageHead
           eyebrow="Customer Portal"
-          title="🔑 Customer Account Sign-In"
-          lead="Please sign in to access your personal health order history, track live shipments, and manage consultation appointments."
+          title={authMode === "login" ? "🔑 Log In into Your Account" : "✨ Create Customer Account"}
+          lead="Access your personalized health orders history, live shipment tracking, and doctor consultations."
         />
 
-        <section style={{ padding: "50px 0 100px" }}>
-          <div className="wrap" style={{ maxWidth: 520 }}>
-            <div className="card" style={{ padding: 36, border: "2px solid var(--line-gold)", boxShadow: "var(--shadow-md)" }}>
-              <div className="center" style={{ marginBottom: 24 }}>
-                <div style={{ fontSize: "3rem", marginBottom: 8 }}>🌿</div>
-                <h2 style={{ margin: "0 0 6px", color: "var(--emerald-900)" }}>Customer Account Sign In</h2>
-                <p className="muted" style={{ fontSize: ".88rem", margin: 0 }}>
-                  Enter your email and contact details to sign in or create your customer account.
-                </p>
-              </div>
-
-              <form onSubmit={handleCustomerLoginSubmit}>
-                <div className="field">
-                  <label htmlFor="cname">Full Name *</label>
-                  <input
-                    id="cname"
-                    type="text"
-                    required
-                    placeholder="e.g. Radhika Sharma"
-                    value={authName}
-                    onChange={(e) => setAuthName(e.target.value)}
-                  />
-                </div>
-
-                <div className="row2">
-                  <div className="field">
-                    <label htmlFor="cemail">Email Address *</label>
-                    <input
-                      id="cemail"
-                      type="email"
-                      required
-                      placeholder="radhika@example.com"
-                      value={authEmail}
-                      onChange={(e) => setAuthEmail(e.target.value)}
-                    />
-                  </div>
-                  <div className="field">
-                    <label htmlFor="cphone">Mobile Phone *</label>
-                    <input
-                      id="cphone"
-                      type="tel"
-                      required
-                      placeholder="+91 98765 43210"
-                      value={authPhone}
-                      onChange={(e) => setAuthPhone(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="field">
-                  <label htmlFor="caddress">Default Delivery Address</label>
-                  <input
-                    id="caddress"
-                    type="text"
-                    placeholder="Flat / House No, Street, Landmark, Pune..."
-                    value={authAddress}
-                    onChange={(e) => setAuthAddress(e.target.value)}
-                  />
-                </div>
-
-                <div className="field">
-                  <label htmlFor="cpass">Account Password *</label>
-                  <input
-                    id="cpass"
-                    type="password"
-                    required
-                    placeholder="Enter or create a password..."
-                    value={authPassword}
-                    onChange={(e) => setAuthPassword(e.target.value)}
-                  />
-                </div>
-
-                <button className="btn btn-primary btn-block btn-lg" type="submit" style={{ marginTop: 16 }}>
-                  🔑 Sign In &amp; View My Account →
-                </button>
-              </form>
-
-              <div className="center" style={{ marginTop: 24, paddingTop: 16, borderTop: "1px dashed var(--line-gold)" }}>
-                <span className="muted" style={{ fontSize: ".82rem" }}>
-                  🔒 Official Kiana Naturopathy Portal • Your data is kept private &amp; secure.
-                </span>
-              </div>
+        <section style={{ padding: "40px 0 90px" }}>
+          <div className="wrap" style={{ maxWidth: 540 }}>
+            {/* 2-Tab Navigation Switcher */}
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                background: "var(--bg-card, #f4f6f4)",
+                padding: 6,
+                borderRadius: 14,
+                marginBottom: 24,
+                border: "1px solid var(--line-gold, #e2e8f0)",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setAuthMode("login")}
+                style={{
+                  flex: 1,
+                  padding: "14px 16px",
+                  borderRadius: 10,
+                  border: "none",
+                  fontWeight: 700,
+                  fontSize: "0.98rem",
+                  cursor: "pointer",
+                  background: authMode === "login" ? "var(--emerald-900, #064e3b)" : "transparent",
+                  color: authMode === "login" ? "#ffffff" : "var(--emerald-900, #064e3b)",
+                  boxShadow: authMode === "login" ? "0 4px 12px rgba(6,78,59,0.2)" : "none",
+                  transition: "all 0.2s ease-in-out",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                }}
+              >
+                <span>🔑</span> Log In
+              </button>
+              <button
+                type="button"
+                onClick={() => setAuthMode("register")}
+                style={{
+                  flex: 1,
+                  padding: "14px 16px",
+                  borderRadius: 10,
+                  border: "none",
+                  fontWeight: 700,
+                  fontSize: "0.98rem",
+                  cursor: "pointer",
+                  background: authMode === "register" ? "var(--emerald-900, #064e3b)" : "transparent",
+                  color: authMode === "register" ? "#ffffff" : "var(--emerald-900, #064e3b)",
+                  boxShadow: authMode === "register" ? "0 4px 12px rgba(6,78,59,0.2)" : "none",
+                  transition: "all 0.2s ease-in-out",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                }}
+              >
+                <span>✨</span> Create Account
+              </button>
             </div>
+
+            {/* TAB 1: LOGIN INTO YOUR ACCOUNT */}
+            {authMode === "login" && (
+              <div className="card" style={{ padding: 36, border: "2px solid var(--line-gold)", boxShadow: "var(--shadow-md)" }}>
+                <div className="center" style={{ marginBottom: 24 }}>
+                  <div style={{ fontSize: "2.8rem", marginBottom: 6 }}>🌿</div>
+                  <h2 style={{ margin: "0 0 6px", color: "var(--emerald-900)" }}>Log In into Your Account</h2>
+                  <p className="muted" style={{ fontSize: ".88rem", margin: 0 }}>
+                    Enter your registered email address or mobile phone number to access your account.
+                  </p>
+                </div>
+
+                {loginError && (
+                  <div
+                    style={{
+                      background: "#FEF2F2",
+                      border: "1px solid #FCA5A5",
+                      color: "#991B1B",
+                      padding: "10px 14px",
+                      borderRadius: 8,
+                      marginBottom: 18,
+                      fontSize: ".9rem",
+                      fontWeight: 600,
+                    }}
+                  >
+                    ⚠️ {loginError}
+                  </div>
+                )}
+
+                <form onSubmit={handleLoginSubmit}>
+                  <div className="field">
+                    <label htmlFor="login-identity">Email Address or Phone Number *</label>
+                    <input
+                      id="login-identity"
+                      type="text"
+                      required
+                      placeholder="e.g. radhika@example.com or +91 98765 43210"
+                      value={loginIdentity}
+                      onChange={(e) => setLoginIdentity(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="login-pwd">Account Password *</label>
+                    <input
+                      id="login-pwd"
+                      type="password"
+                      required
+                      placeholder="Enter your account password"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                    />
+                  </div>
+
+                  <button className="btn btn-primary btn-block btn-lg" type="submit" style={{ marginTop: 16 }}>
+                    🔑 Sign In to My Account →
+                  </button>
+                </form>
+
+                <div className="center" style={{ marginTop: 24, paddingTop: 18, borderTop: "1px dashed var(--line-gold)" }}>
+                  <span className="muted" style={{ fontSize: ".88rem" }}>
+                    Don't have an account yet?{" "}
+                    <button
+                      type="button"
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "var(--emerald-900)",
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        padding: 0,
+                      }}
+                      onClick={() => setAuthMode("register")}
+                    >
+                      Create Account here
+                    </button>
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: CREATE ACCOUNT */}
+            {authMode === "register" && (
+              <div className="card" style={{ padding: 36, border: "2px solid var(--line-gold)", boxShadow: "var(--shadow-md)" }}>
+                <div className="center" style={{ marginBottom: 24 }}>
+                  <div style={{ fontSize: "2.8rem", marginBottom: 6 }}>✨</div>
+                  <h2 style={{ margin: "0 0 6px", color: "var(--emerald-900)" }}>Create New Account</h2>
+                  <p className="muted" style={{ fontSize: ".88rem", margin: 0 }}>
+                    Register for a free Kiana Naturopathy account for fast checkout, order tracking, and consultations.
+                  </p>
+                </div>
+
+                {regError && (
+                  <div
+                    style={{
+                      background: "#FEF2F2",
+                      border: "1px solid #FCA5A5",
+                      color: "#991B1B",
+                      padding: "10px 14px",
+                      borderRadius: 8,
+                      marginBottom: 18,
+                      fontSize: ".9rem",
+                      fontWeight: 600,
+                    }}
+                  >
+                    ⚠️ {regError}
+                  </div>
+                )}
+
+                <form onSubmit={handleRegisterSubmit}>
+                  <div className="field">
+                    <label htmlFor="reg-name">Full Name *</label>
+                    <input
+                      id="reg-name"
+                      type="text"
+                      required
+                      placeholder="e.g. Radhika Sharma"
+                      value={regName}
+                      onChange={(e) => setRegName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="row2">
+                    <div className="field">
+                      <label htmlFor="reg-email">Email Address *</label>
+                      <input
+                        id="reg-email"
+                        type="email"
+                        required
+                        placeholder="radhika@example.com"
+                        value={regEmail}
+                        onChange={(e) => setRegEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="field">
+                      <label htmlFor="reg-phone">Mobile Phone *</label>
+                      <input
+                        id="reg-phone"
+                        type="tel"
+                        required
+                        placeholder="+91 98765 43210"
+                        value={regPhone}
+                        onChange={(e) => setRegPhone(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="reg-address">Default Delivery Address</label>
+                    <input
+                      id="reg-address"
+                      type="text"
+                      placeholder="Flat / House No, Street, Landmark, Pune..."
+                      value={regAddress}
+                      onChange={(e) => setRegAddress(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="row2">
+                    <div className="field">
+                      <label htmlFor="reg-pwd">Create Password *</label>
+                      <input
+                        id="reg-pwd"
+                        type="password"
+                        required
+                        placeholder="Choose password"
+                        value={regPassword}
+                        onChange={(e) => setRegPassword(e.target.value)}
+                      />
+                    </div>
+                    <div className="field">
+                      <label htmlFor="reg-cpwd">Confirm Password *</label>
+                      <input
+                        id="reg-cpwd"
+                        type="password"
+                        required
+                        placeholder="Confirm password"
+                        value={regConfirmPassword}
+                        onChange={(e) => setRegConfirmPassword(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <button className="btn btn-primary btn-block btn-lg" type="submit" style={{ marginTop: 16 }}>
+                    ✨ Create Account &amp; Sign In →
+                  </button>
+                </form>
+
+                <div className="center" style={{ marginTop: 24, paddingTop: 18, borderTop: "1px dashed var(--line-gold)" }}>
+                  <span className="muted" style={{ fontSize: ".88rem" }}>
+                    Already have an account?{" "}
+                    <button
+                      type="button"
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "var(--emerald-900)",
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        padding: 0,
+                      }}
+                      onClick={() => setAuthMode("login")}
+                    >
+                      Log in to your account
+                    </button>
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </>
