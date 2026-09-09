@@ -46,7 +46,7 @@ export const Route = createFileRoute("/shop/$slug")({
 function ProductPage() {
   const { product: initialProduct } = Route.useLoaderData();
   const { add } = useCart();
-  const { isInWishlist, toggleWishlist, setIsCartDrawerOpen, productsList } = useECommerce();
+  const { isInWishlist, toggleWishlist, setIsCartDrawerOpen, productsList, reviewsMap, addReview } = useECommerce();
   const navigate = useNavigate();
 
   const product = (productsList && productsList.find((p) => p.slug === initialProduct.slug)) || initialProduct;
@@ -60,8 +60,15 @@ function ProductPage() {
   const [reviewName, setReviewName] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
-  const [localReviews, setLocalReviews] = useState(product.reviewsList || []);
+  const [reviewPhoto, setReviewPhoto] = useState("");
   const [reviewSuccess, setReviewSuccess] = useState(false);
+
+  // Combine initial product reviews with customer persisted reviews from reviewsMap
+  const persistedReviews = useMemo(() => reviewsMap[product.slug] || [], [reviewsMap, product.slug]);
+  const allReviews = useMemo(() => {
+    const defaultRevs = product.reviewsList || [];
+    return [...persistedReviews, ...defaultRevs];
+  }, [persistedReviews, product.reviewsList]);
 
   const wishlisted = isInWishlist(product.slug);
 
@@ -85,11 +92,14 @@ function ProductPage() {
       setPincodeStatus("❌ Please enter a valid 6-digit Indian PIN Code.");
       return;
     }
-    const days = Number(pincode.slice(-1)) % 3 + 2;
-    setPincodeStatus(`✅ Delivery available to ${pincode}! Expected in ${days} to ${days + 2} working days.`);
+    const daysToAdd = Number(pincode.slice(-1)) % 2 === 0 ? 2 : 3;
+    const estDate = new Date();
+    estDate.setDate(estDate.getDate() + daysToAdd);
+    const dateStr = estDate.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short" });
+    setPincodeStatus(`🚚 Delivers to PIN ${pincode} by ${dateStr} (Express Air Courier | Cash on Delivery Available)`);
   };
 
-  const handleAddReview = (e: React.FormEvent) => {
+  const handleAddReviewSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!reviewName.trim() || !reviewComment.trim()) return;
     const newRev = {
@@ -99,12 +109,14 @@ function ProductPage() {
       date: "Just now",
       comment: reviewComment.trim(),
       verified: true,
+      photo: reviewPhoto || undefined,
     };
-    setLocalReviews([newRev, ...localReviews]);
+    addReview(product.slug, newRev);
     setReviewName("");
     setReviewComment("");
+    setReviewPhoto("");
     setReviewSuccess(true);
-    setTimeout(() => setReviewSuccess(false), 3000);
+    setTimeout(() => setReviewSuccess(false), 3500);
   };
 
   return (
@@ -333,7 +345,7 @@ function ProductPage() {
               className={`tab-btn ${activeTab === "reviews" ? "active" : ""}`}
               onClick={() => setActiveTab("reviews")}
             >
-              Customer Reviews ({localReviews.length})
+              Customer Reviews ({allReviews.length})
             </button>
           </div>
 
@@ -377,23 +389,39 @@ function ProductPage() {
                 <div className="reviews-summary-header">
                   <div>
                     <h2 style={{ margin: 0 }}>Customer Reviews</h2>
-                    <Stars rating={product.rating} reviews={localReviews.length} />
+                    <Stars rating={product.rating} reviews={allReviews.length} />
                   </div>
                 </div>
 
                 {/* Reviews List */}
                 <div className="reviews-list" style={{ marginTop: 24 }}>
-                  {localReviews.length === 0 ? (
+                  {allReviews.length === 0 ? (
                     <p className="muted">No reviews written yet. Be the first to review this product!</p>
                   ) : (
-                    localReviews.map((rev) => (
-                      <div key={rev.id} className="review-card">
+                    allReviews.map((rev) => (
+                      <div key={rev.id} className="review-card" style={{ marginBottom: 16 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                           <strong>{rev.author} {rev.verified && <span className="verified-badge">✓ Verified Buyer</span>}</strong>
                           <span className="muted" style={{ fontSize: ".82rem" }}>{rev.date}</span>
                         </div>
                         <Stars rating={rev.rating} />
-                        <p style={{ marginTop: 8, fontSize: ".95rem" }}>"{rev.comment}"</p>
+                        <p style={{ marginTop: 8, fontSize: ".95rem", lineHeight: "1.5" }}>"{rev.comment}"</p>
+
+                        {/* Customer Uploaded Unboxing Photo Thumbnail */}
+                        {rev.photo && (
+                          <div style={{ marginTop: 10 }}>
+                            <img
+                              src={rev.photo}
+                              alt="Customer product photo"
+                              style={{ width: 90, height: 90, objectFit: "cover", borderRadius: 8, border: "2px solid var(--line-gold)", cursor: "pointer" }}
+                              onClick={() => window.open(rev.photo, "_blank")}
+                              title="Click to view full unboxing photo"
+                            />
+                            <span style={{ display: "block", fontSize: ".76rem", color: "var(--muted)", marginTop: 2 }}>
+                              📷 Verified Customer Unboxing Photo
+                            </span>
+                          </div>
+                        )}
                       </div>
                     ))
                   )}
@@ -407,10 +435,10 @@ function ProductPage() {
                       🎉 Thank you! Your review has been published.
                     </div>
                   )}
-                  <form onSubmit={handleAddReview}>
+                  <form onSubmit={handleAddReviewSubmit}>
                     <div className="row2">
                       <div className="field">
-                        <label>Your Name</label>
+                        <label>Your Name *</label>
                         <input
                           required
                           value={reviewName}
@@ -419,7 +447,7 @@ function ProductPage() {
                         />
                       </div>
                       <div className="field">
-                        <label>Rating (1 to 5 Stars)</label>
+                        <label>Rating (1 to 5 Stars) *</label>
                         <select
                           value={reviewRating}
                           onChange={(e) => setReviewRating(Number(e.target.value))}
@@ -432,8 +460,9 @@ function ProductPage() {
                         </select>
                       </div>
                     </div>
+
                     <div className="field">
-                      <label>Your Review &amp; Experience</label>
+                      <label>Your Review &amp; Health Experience *</label>
                       <textarea
                         required
                         rows={3}
@@ -442,8 +471,54 @@ function ProductPage() {
                         placeholder="Share how this product helped your health routine..."
                       />
                     </div>
-                    <button type="submit" className="btn btn-primary">
-                      Submit Review
+
+                    <div className="field">
+                      <label style={{ fontWeight: 700 }}>Upload Unboxing / Product Photo (Optional)</label>
+                      <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 6 }}>
+                        {reviewPhoto ? (
+                          <div style={{ position: "relative" }}>
+                            <img
+                              src={reviewPhoto}
+                              alt="Uploaded photo preview"
+                              style={{ width: 54, height: 54, objectFit: "cover", borderRadius: 8, border: "2px solid var(--line-gold)" }}
+                            />
+                            <button
+                              type="button"
+                              style={{ position: "absolute", top: -6, right: -6, background: "#EF4444", color: "#fff", border: "none", borderRadius: "50%", width: 20, height: 20, cursor: "pointer", fontSize: "10px", lineHeight: "1" }}
+                              onClick={() => setReviewPhoto("")}
+                              title="Remove photo"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ) : (
+                          <label className="btn btn-outline btn-sm" style={{ cursor: "pointer", background: "#ffffff" }}>
+                            📷 Choose Photo File...
+                            <input
+                              type="file"
+                              accept="image/*"
+                              style={{ display: "none" }}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onload = (evt) => {
+                                    if (evt.target?.result) setReviewPhoto(evt.target.result as string);
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                          </label>
+                        )}
+                        <span className="muted" style={{ fontSize: ".82rem" }}>
+                          {reviewPhoto ? "✓ Photo attached!" : "Add a photo of your package or unboxing."}
+                        </span>
+                      </div>
+                    </div>
+
+                    <button type="submit" className="btn btn-primary" style={{ marginTop: 12 }}>
+                      Submit Verified Review
                     </button>
                   </form>
                 </div>

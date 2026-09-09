@@ -28,6 +28,16 @@ export type BookingRecord = {
   phone: string;
 };
 
+export type ReviewItem = {
+  id: string;
+  author: string;
+  rating: number;
+  date: string;
+  comment: string;
+  verified: boolean;
+  photo?: string;
+};
+
 export type CustomerUser = {
   name: string;
   email: string;
@@ -60,6 +70,14 @@ type ECommerceContextValue = {
   addProduct: (newProduct: Product) => void;
   deleteProduct: (slug: string) => void;
   resetCatalogToDefault: () => void;
+
+  // Custom Categories
+  categoriesList: string[];
+  addCategory: (categoryName: string) => void;
+
+  // Product Reviews with Photo Uploads
+  reviewsMap: Record<string, ReviewItem[]>;
+  addReview: (productSlug: string, review: ReviewItem) => void;
 
   // Quick View Modal
   quickViewProduct: Product | null;
@@ -105,6 +123,8 @@ const BOOKINGS_KEY = "kiana-bookings-history-v2";
 const THEME_KEY = "kiana-theme-mode";
 const PRODUCTS_KEY = "kiana-products-catalog-v1";
 const CUSTOMER_KEY = "kiana_customer_user_v1";
+const CATEGORIES_KEY = "kiana-custom-categories-v1";
+const REVIEWS_KEY = "kiana-product-reviews-v3";
 
 const ECommerceContext = createContext<ECommerceContextValue | null>(null);
 
@@ -140,6 +160,10 @@ export function ECommerceProvider({ children }: { children: ReactNode }) {
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
   const [productsList, setProductsList] = useState<Product[]>(INITIAL_PRODUCTS);
 
+  // Custom Categories & Reviews State
+  const [customCategories, setCustomCategories] = useState<string[]>([]);
+  const [reviewsMap, setReviewsMap] = useState<Record<string, ReviewItem[]>>({});
+
   // Load from localStorage on mount
   useEffect(() => {
     try {
@@ -161,6 +185,12 @@ export function ECommerceProvider({ children }: { children: ReactNode }) {
       const savedBookings = window.localStorage.getItem(BOOKINGS_KEY);
       if (savedBookings) setBookings(JSON.parse(savedBookings));
 
+      const savedCats = window.localStorage.getItem(CATEGORIES_KEY);
+      if (savedCats) setCustomCategories(JSON.parse(savedCats));
+
+      const savedRevs = window.localStorage.getItem(REVIEWS_KEY);
+      if (savedRevs) setReviewsMap(JSON.parse(savedRevs));
+
       const savedProducts = window.localStorage.getItem(PRODUCTS_KEY);
       if (savedProducts) {
         const parsed = JSON.parse(savedProducts);
@@ -171,6 +201,41 @@ export function ECommerceProvider({ children }: { children: ReactNode }) {
     } catch {
       /* ignore */
     }
+  }, []);
+
+  // Compute merged unique categories list
+  const categoriesList = useMemo(() => {
+    const fromProducts = (productsList || INITIAL_PRODUCTS).map((p) => p.category);
+    return Array.from(new Set([...fromProducts, ...customCategories])).filter(Boolean);
+  }, [productsList, customCategories]);
+
+  const addCategory = useCallback((categoryName: string) => {
+    const clean = categoryName.trim();
+    if (!clean) return;
+    setCustomCategories((prev) => {
+      if (prev.includes(clean)) return prev;
+      const next = [clean, ...prev];
+      try {
+        window.localStorage.setItem(CATEGORIES_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }, []);
+
+  const addReview = useCallback((productSlug: string, review: ReviewItem) => {
+    setReviewsMap((prev) => {
+      const existing = prev[productSlug] || [];
+      const nextList = [review, ...existing];
+      const nextMap = { ...prev, [productSlug]: nextList };
+      try {
+        window.localStorage.setItem(REVIEWS_KEY, JSON.stringify(nextMap));
+      } catch {
+        /* ignore */
+      }
+      return nextMap;
+    });
   }, []);
 
   const loginCustomer = useCallback((user: CustomerUser) => {
@@ -412,6 +477,10 @@ export function ECommerceProvider({ children }: { children: ReactNode }) {
         addProduct,
         deleteProduct,
         resetCatalogToDefault,
+        categoriesList,
+        addCategory,
+        reviewsMap,
+        addReview,
         quickViewProduct,
         setQuickViewProduct,
         isSearchOpen,

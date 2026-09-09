@@ -3,8 +3,10 @@ import { useState, useMemo } from "react";
 
 import { ProductCard } from "@/components/site/ProductCard";
 import { PageHead } from "@/components/site/SiteLayout";
-import { categories, products } from "@/data/products";
+import { products } from "@/data/products";
+import { HEALTH_BUNDLES } from "@/data/bundles";
 import { RemedyQuizModal } from "@/components/ecommerce/RemedyQuizModal";
+import { formatINR, useCart } from "@/lib/cart";
 import { useECommerce } from "@/lib/ecommerce-context";
 
 export const Route = createFileRoute("/shop/")({
@@ -29,7 +31,8 @@ export const Route = createFileRoute("/shop/")({
 });
 
 function ShopPage() {
-  const { productsList } = useECommerce();
+  const { productsList, categoriesList, setIsCartDrawerOpen } = useECommerce();
+  const { add } = useCart();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("featured");
@@ -40,9 +43,12 @@ function ShopPage() {
   const [gridCols, setGridCols] = useState<"g4" | "g2">("g4");
   const [isQuizOpen, setIsQuizOpen] = useState(false);
 
+  const displayProducts = useMemo(() => productsList || products, [productsList]);
+  const activeCategoriesList = useMemo(() => categoriesList.length > 0 ? categoriesList : Array.from(new Set(displayProducts.map(p => p.category))), [categoriesList, displayProducts]);
+
   // Filter logic
   const filteredProducts = useMemo(() => {
-    let list = [...(productsList || products)];
+    let list = [...displayProducts];
 
     if (selectedCategory !== "All") {
       list = list.filter((p) => p.category === selectedCategory);
@@ -83,6 +89,7 @@ function ShopPage() {
 
     return list;
   }, [
+    displayProducts,
     selectedCategory,
     searchQuery,
     sortOption,
@@ -120,6 +127,64 @@ function ShopPage() {
 
       <section style={{ padding: "40px 0 80px" }}>
         <div className="wrap">
+          {/* Curated Health Bundles Showcase (Save 20%) */}
+          <div style={{ marginBottom: 44, padding: "28px 32px", background: "var(--cream-100, #FDFBF7)", border: "2px solid var(--line-gold, #E2E8F0)", borderRadius: 16, boxShadow: "var(--shadow-sm)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+              <div>
+                <span className="eyebrow" style={{ color: "var(--gold-500, #D4AF37)", fontWeight: 700 }}>1-Click Savings Bundles</span>
+                <h2 style={{ margin: "4px 0 0", color: "var(--emerald-900, #064E3B)", fontSize: "1.5rem" }}>🔥 Curated Health Bundles (Save 20% OFF)</h2>
+              </div>
+              <span className="badge badge-gold" style={{ fontSize: ".9rem", padding: "6px 14px" }}>⚡ Limited Time Combos</span>
+            </div>
+
+            <div className="grid g3" style={{ gap: 20 }}>
+              {HEALTH_BUNDLES.map((bundle) => {
+                const rawTotal = bundle.items.reduce((sum, item) => sum + item.price, 0);
+                const bundlePrice = Math.round(rawTotal * (1 - bundle.discountPercent / 100));
+
+                return (
+                  <div key={bundle.id} className="card" style={{ padding: 20, display: "flex", flexDirection: "column", justifyContent: "space-between", border: "1px solid var(--line-gold)", background: "#ffffff" }}>
+                    <div>
+                      <span className="badge badge-green" style={{ marginBottom: 8, display: "inline-block" }}>{bundle.discountPercent}% OFF BUNDLE</span>
+                      <h3 style={{ margin: "4px 0 6px", fontSize: "1.1rem" }}>{bundle.title}</h3>
+                      <p className="muted" style={{ fontSize: ".84rem", lineHeight: "1.4", margin: "0 0 14px" }}>{bundle.tagline}</p>
+
+                      <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+                        {bundle.items.map((item) => (
+                          <div key={item.slug} style={{ textAlign: "center", flex: 1 }}>
+                            <img src={item.image} alt={item.name} style={{ width: "100%", height: 50, objectFit: "cover", borderRadius: 6, border: "1px solid var(--line-gold)" }} />
+                            <span style={{ fontSize: ".72rem", display: "block", marginTop: 2, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 12 }}>
+                        <strong className="price" style={{ fontSize: "1.25rem" }}>{formatINR(bundlePrice)}</strong>
+                        <s className="compare-price" style={{ fontSize: ".9rem" }}>{formatINR(rawTotal)}</s>
+                        <span className="savings-pill" style={{ fontSize: ".76rem" }}>Save {formatINR(rawTotal - bundlePrice)}</span>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-block btn-sm"
+                        onClick={() => {
+                          bundle.items.forEach((item) => {
+                            add({ slug: item.slug, name: item.name, price: item.price, image: item.image }, 1);
+                          });
+                          setIsCartDrawerOpen(true);
+                        }}
+                      >
+                        🛒 Add 3-Item Bundle to Cart →
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Top Bar Controls */}
           <div className="shop-top-bar">
             {/* Search Input */}
@@ -181,10 +246,10 @@ function ShopPage() {
               className={`chip ${selectedCategory === "All" ? "active" : ""}`}
               onClick={() => setSelectedCategory("All")}
             >
-              All Products ({products.length})
+              All Products ({displayProducts.length})
             </button>
-            {categories.map((cat) => {
-              const count = products.filter((p) => p.category === cat).length;
+            {activeCategoriesList.map((cat) => {
+              const count = displayProducts.filter((p) => p.category === cat).length;
               return (
                 <button
                   key={cat}

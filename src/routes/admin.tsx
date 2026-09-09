@@ -43,7 +43,18 @@ function AdminPage() {
     addProduct,
     deleteProduct,
     resetCatalogToDefault,
+    categoriesList,
+    addCategory,
   } = useECommerce();
+
+  const handleAddNewCategoryPrompt = () => {
+    const input = window.prompt("Enter new custom category name (e.g. Hair Care, Weight Loss, Pain Relief):");
+    if (input && input.trim()) {
+      const name = input.trim();
+      addCategory(name);
+      alert(`Category "${name}" added successfully! It is now available in products and shop filters.`);
+    }
+  };
 
   // Auto-refresh orders when dashboard is loaded, focused, or in background tab
   useEffect(() => {
@@ -845,9 +856,9 @@ function AdminPage() {
                 </div>
 
                 <div className="card">
-                  <span className="eyebrow">Categories</span>
-                  <h2 style={{ fontSize: "2.2rem", margin: "4px 0" }}>5</h2>
-                  <span className="muted" style={{ fontSize: ".84rem" }}>Kits, Teas, Oils, Supplements, Skincare</span>
+                  <span className="eyebrow">Active Categories</span>
+                  <h2 style={{ fontSize: "2.2rem", margin: "4px 0" }}>{categoriesList.length}</h2>
+                  <span className="muted" style={{ fontSize: ".84rem" }}>Dynamic Store Product Categories</span>
                 </div>
               </div>
 
@@ -862,6 +873,9 @@ function AdminPage() {
                   </div>
 
                   <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+                    <button className="btn btn-outline btn-sm" onClick={handleAddNewCategoryPrompt}>
+                      🏷️ ➕ Add Custom Category
+                    </button>
                     <button className="btn btn-primary btn-sm" onClick={() => setShowAddProductModal(true)}>
                       ➕ Add New Product
                     </button>
@@ -895,11 +909,11 @@ function AdminPage() {
                   <div className="field" style={{ margin: 0 }}>
                     <select value={inventoryCategory} onChange={(e) => setInventoryCategory(e.target.value)}>
                       <option value="All">All Categories</option>
-                      <option value="Detox Kits">Detox Kits</option>
-                      <option value="Herbal Teas">Herbal Teas</option>
-                      <option value="Supplements">Supplements</option>
-                      <option value="Essential Oils">Essential Oils</option>
-                      <option value="Natural Skin Care">Natural Skin Care</option>
+                      {categoriesList.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -1078,17 +1092,25 @@ function AdminPage() {
                 </div>
 
                 <div className="field">
-                  <label htmlFor="pcat">Category *</label>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                    <label htmlFor="pcat" style={{ margin: 0 }}>Category *</label>
+                    <button
+                      type="button"
+                      className="btn-link"
+                      style={{ fontSize: ".78rem", fontWeight: 700, color: "var(--emerald-900)" }}
+                      onClick={handleAddNewCategoryPrompt}
+                    >
+                      ➕ Add Category
+                    </button>
+                  </div>
                   <select
                     id="pcat"
                     value={editingProduct.category}
                     onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
                   >
-                    <option value="Detox Kits">Detox Kits</option>
-                    <option value="Herbal Teas">Herbal Teas</option>
-                    <option value="Supplements">Supplements</option>
-                    <option value="Essential Oils">Essential Oils</option>
-                    <option value="Natural Skin Care">Natural Skin Care</option>
+                    {categoriesList.map((cat) => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -1248,17 +1270,25 @@ function AdminPage() {
                 </div>
 
                 <div className="field">
-                  <label htmlFor="npcat">Category *</label>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                    <label htmlFor="npcat" style={{ margin: 0 }}>Category *</label>
+                    <button
+                      type="button"
+                      className="btn-link"
+                      style={{ fontSize: ".78rem", fontWeight: 700, color: "var(--emerald-900)" }}
+                      onClick={handleAddNewCategoryPrompt}
+                    >
+                      ➕ Add Category
+                    </button>
+                  </div>
                   <select
                     id="npcat"
                     value={newProdCategory}
                     onChange={(e) => setNewProdCategory(e.target.value)}
                   >
-                    <option value="Detox Kits">Detox Kits</option>
-                    <option value="Herbal Teas">Herbal Teas</option>
-                    <option value="Supplements">Supplements</option>
-                    <option value="Essential Oils">Essential Oils</option>
-                    <option value="Natural Skin Care">Natural Skin Care</option>
+                    {categoriesList.map((cat) => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
                   </select>
                 </div>
               </div>
