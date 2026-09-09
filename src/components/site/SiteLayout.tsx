@@ -46,7 +46,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           <nav className={`main ${open ? "open" : ""}`}>
             {NAV.map((item) => (
               <Link
-                key={item.to}
+                key={item.label}
                 to={item.to}
                 activeOptions={{ exact: item.to === "/" }}
                 activeProps={{ className: "active" }}
