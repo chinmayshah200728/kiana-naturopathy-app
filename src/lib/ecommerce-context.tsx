@@ -10,7 +10,7 @@ export type OrderRecord = {
   discount: number;
   shipping: number;
   total: number;
-  status: "Order Placed" | "Packed" | "Out for Delivery" | "Delivered";
+  status: "Order Placed" | "Packed" | "Out for Delivery" | "Delivered" | "Cancelled";
   paymentMethod: "upi" | "cod" | "card";
   address: string;
   customerName: string;

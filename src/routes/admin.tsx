@@ -158,11 +158,10 @@ function AdminPage() {
   const [newProdStockCount, setNewProdStockCount] = useState("25");
   const [newProdDesc, setNewProdDesc] = useState("");
 
-  // Clear all orders handler
-  const handleClearAll = () => {
-    if (window.confirm("Are you sure you want to clear all sales and order history?")) {
-      clearAllOrders();
-      setManualOrders([]);
+  // Cancel Order Handler
+  const handleCancelOrder = (orderId: string) => {
+    if (window.confirm("Are you sure you want to cancel this order? Cancelled orders will automatically be excluded from total sales revenue and growth graphs.")) {
+      handleUpdateStatus(orderId, "Cancelled");
     }
   };
 
@@ -173,6 +172,10 @@ function AdminPage() {
     list.forEach((item) => map.set(item.orderNumber, item));
     return Array.from(map.values()).sort((a, b) => b.id.localeCompare(a.id));
   }, [manualOrders, ordersHistory]);
+
+  // Active (non-cancelled) orders for sales & revenue analytics
+  const validOrders = useMemo(() => allOrders.filter((o) => o.status !== "Cancelled"), [allOrders]);
+  const cancelledOrdersCount = useMemo(() => allOrders.filter((o) => o.status === "Cancelled").length, [allOrders]);
 
   // Update status handler
   const handleUpdateStatus = (orderId: string, newStatus: OrderRecord["status"]) => {
@@ -241,13 +244,13 @@ function AdminPage() {
     });
   }, [allOrders, statusFilter, paymentFilter, searchQuery]);
 
-  // Executive Metrics
-  const totalRevenue = useMemo(() => allOrders.reduce((sum, o) => sum + o.total, 0), [allOrders]);
-  const avgOrderValue = useMemo(() => (allOrders.length ? Math.round(totalRevenue / allOrders.length) : 0), [allOrders, totalRevenue]);
-  const upiCount = useMemo(() => allOrders.filter((o) => o.paymentMethod === "upi").length, [allOrders]);
-  const codCount = useMemo(() => allOrders.filter((o) => o.paymentMethod === "cod").length, [allOrders]);
+  // Executive Metrics (Calculated ONLY on active non-cancelled orders)
+  const totalRevenue = useMemo(() => validOrders.reduce((sum, o) => sum + o.total, 0), [validOrders]);
+  const avgOrderValue = useMemo(() => (validOrders.length ? Math.round(totalRevenue / validOrders.length) : 0), [validOrders, totalRevenue]);
+  const upiCount = useMemo(() => validOrders.filter((o) => o.paymentMethod === "upi").length, [validOrders]);
+  const codCount = useMemo(() => validOrders.filter((o) => o.paymentMethod === "cod").length, [validOrders]);
 
-  // Group sales by month for the last 6 months
+  // Group active (non-cancelled) sales by month for the last 6 months
   const monthlySalesData = useMemo(() => {
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const now = new Date();
@@ -268,8 +271,8 @@ function AdminPage() {
       });
     }
 
-    // Populate actual order totals
-    allOrders.forEach((o) => {
+    // Populate actual order totals from non-cancelled orders only
+    validOrders.forEach((o) => {
       let orderDate = new Date();
       if (o.date) {
         const parsed = Date.parse(o.date);
@@ -290,7 +293,7 @@ function AdminPage() {
     });
 
     return result;
-  }, [allOrders]);
+  }, [validOrders]);
 
   // Filtered products list for inventory
   const filteredProductsList = useMemo(() => {
@@ -514,10 +517,10 @@ function AdminPage() {
                 </div>
 
                 <div className="card">
-                  <span className="eyebrow">Total Orders Recorded</span>
-                  <h2 style={{ fontSize: "2.2rem", margin: "4px 0" }}>{allOrders.length}</h2>
+                  <span className="eyebrow">Active Store Sales</span>
+                  <h2 style={{ fontSize: "2.2rem", margin: "4px 0" }}>{validOrders.length}</h2>
                   <span className="muted" style={{ fontSize: ".84rem" }}>
-                    Active &amp; Delivered Orders
+                    Active Orders {cancelledOrdersCount > 0 && <span style={{ color: "#DC2626", fontWeight: 700 }}>({cancelledOrdersCount} Cancelled)</span>}
                   </span>
                 </div>
 
@@ -525,7 +528,7 @@ function AdminPage() {
                   <span className="eyebrow">Average Order Value</span>
                   <h2 style={{ fontSize: "2.2rem", margin: "4px 0" }}>{formatINR(avgOrderValue)}</h2>
                   <span className="muted" style={{ fontSize: ".84rem" }}>
-                    Per Customer Transaction
+                    Per Active Transaction
                   </span>
                 </div>
 
@@ -534,11 +537,11 @@ function AdminPage() {
                   <div style={{ marginTop: 8, fontSize: ".9rem" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                       <span>📲 UPI / Online:</span>
-                      <strong>{allOrders.length ? Math.round((upiCount / allOrders.length) * 100) : 0}% ({upiCount})</strong>
+                      <strong>{validOrders.length ? Math.round((upiCount / validOrders.length) * 100) : 0}% ({upiCount})</strong>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <span>💵 Cash on Delivery:</span>
-                      <strong>{allOrders.length ? Math.round((codCount / allOrders.length) * 100) : 0}% ({codCount})</strong>
+                      <strong>{validOrders.length ? Math.round((codCount / validOrders.length) * 100) : 0}% ({codCount})</strong>
                     </div>
                   </div>
                 </div>
@@ -619,7 +622,7 @@ function AdminPage() {
                   <div>
                     <h3 style={{ margin: 0 }}>Order Fulfillment Directory</h3>
                     <span className="muted" style={{ fontSize: ".86rem" }}>
-                      Showing {filteredOrders.length} of {allOrders.length} total orders
+                      Showing {filteredOrders.length} of {allOrders.length} total orders ({validOrders.length} active)
                     </span>
                   </div>
 
@@ -632,14 +635,6 @@ function AdminPage() {
                     </button>
                     <button className="btn btn-outline btn-sm" onClick={handleExportCSV}>
                       📊 Export Sales Report (CSV)
-                    </button>
-                    <button
-                      className="btn btn-outline btn-sm"
-                      onClick={handleClearAll}
-                      style={{ color: "#DC2626", borderColor: "#FCA5A5" }}
-                      title="Clear all recorded sales history"
-                    >
-                      🗑️ Clear Sales History
                     </button>
                   </div>
                 </div>
@@ -688,6 +683,7 @@ function AdminPage() {
                         <option value="Packed">Packed</option>
                         <option value="Out for Delivery">Out for Delivery</option>
                         <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
                       </select>
                     </div>
 
@@ -719,9 +715,9 @@ function AdminPage() {
                   </thead>
                   <tbody>
                     {filteredOrders.map((o) => (
-                      <tr key={o.id}>
+                      <tr key={o.id} style={o.status === "Cancelled" ? { background: "#FFF5F5", opacity: 0.85 } : {}}>
                         <td>
-                          <strong style={{ fontSize: ".95rem", color: "var(--emerald-900)" }}>{o.orderNumber}</strong>
+                          <strong style={{ fontSize: ".95rem", color: o.status === "Cancelled" ? "#991B1B" : "var(--emerald-900)" }}>{o.orderNumber}</strong>
                           <span className="muted" style={{ fontSize: ".8rem", display: "block" }}>
                             {o.date}
                           </span>
@@ -746,7 +742,9 @@ function AdminPage() {
                         </td>
 
                         <td>
-                          <strong className="price" style={{ fontSize: "1.1rem" }}>{formatINR(o.total)}</strong>
+                          <strong className="price" style={{ fontSize: "1.1rem", textDecoration: o.status === "Cancelled" ? "line-through" : "none", color: o.status === "Cancelled" ? "#991B1B" : undefined }}>
+                            {formatINR(o.total)}
+                          </strong>
                         </td>
 
                         <td>
@@ -757,22 +755,52 @@ function AdminPage() {
                           <select
                             value={o.status}
                             onChange={(e) => handleUpdateStatus(o.id, e.target.value as OrderRecord["status"])}
-                            style={{ fontSize: ".82rem", padding: "6px 10px", fontWeight: 700 }}
+                            style={{
+                              fontSize: ".82rem",
+                              padding: "6px 10px",
+                              fontWeight: 700,
+                              background: o.status === "Cancelled" ? "#FEF2F2" : undefined,
+                              color: o.status === "Cancelled" ? "#991B1B" : undefined,
+                              borderColor: o.status === "Cancelled" ? "#FCA5A5" : undefined,
+                            }}
                           >
                             <option value="Order Placed">Order Placed</option>
                             <option value="Packed">Packed</option>
                             <option value="Out for Delivery">Out for Delivery</option>
                             <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">❌ Cancelled</option>
                           </select>
                         </td>
 
                         <td>
-                          <button
-                            className="btn btn-outline btn-sm"
-                            onClick={() => setSelectedOrderForSlip(o)}
-                          >
-                            📄 Packing Slip
-                          </button>
+                          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                            <button
+                              className="btn btn-outline btn-sm"
+                              onClick={() => setSelectedOrderForSlip(o)}
+                              title="View and print packing slip"
+                            >
+                              📄 Slip
+                            </button>
+                            {o.status === "Cancelled" ? (
+                              <button
+                                className="btn btn-outline btn-sm"
+                                style={{ color: "#059669", borderColor: "#A7F3D0", background: "#ECFDF5" }}
+                                onClick={() => handleUpdateStatus(o.id, "Order Placed")}
+                                title="Re-open cancelled order"
+                              >
+                                ↩️ Restore
+                              </button>
+                            ) : (
+                              <button
+                                className="btn btn-outline btn-sm"
+                                style={{ color: "#DC2626", borderColor: "#FCA5A5", background: "#FEF2F2" }}
+                                onClick={() => handleCancelOrder(o.id)}
+                                title="Cancel order and remove from sales graph"
+                              >
+                                ❌ Cancel
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}

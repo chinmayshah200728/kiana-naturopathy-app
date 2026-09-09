@@ -563,7 +563,9 @@ function AccountPage() {
                                 Placed on {order.date}
                               </span>
                             </div>
-                            <span className="badge badge-green">{order.status}</span>
+                            <span className={order.status === "Cancelled" ? "badge" : "badge badge-green"} style={order.status === "Cancelled" ? { background: "#FEE2E2", color: "#991B1B", fontWeight: 700 } : {}}>
+                              {order.status}
+                            </span>
                           </div>
 
                           <div className="order-items-preview">
@@ -586,24 +588,30 @@ function AccountPage() {
                             <span className="muted" style={{ fontSize: ".82rem", fontWeight: 700 }}>
                               Shipment Status Timeline:
                             </span>
-                            <div className="tracking-steps">
-                              <div className={`track-step ${["Order Placed", "Packed", "Out for Delivery", "Delivered"].includes(order.status) ? "active" : ""}`}>
-                                <span className="dot" />
-                                <span>Order Placed</span>
+                            {order.status === "Cancelled" ? (
+                              <div style={{ color: "#991B1B", background: "#FEF2F2", padding: "10px 14px", borderRadius: 8, marginTop: 8, fontWeight: 700, fontSize: ".88rem" }}>
+                                🚫 This order has been cancelled by store administration.
                               </div>
-                              <div className={`track-step ${["Packed", "Out for Delivery", "Delivered"].includes(order.status) ? "active" : ""}`}>
-                                <span className="dot" />
-                                <span>Packed</span>
+                            ) : (
+                              <div className="tracking-steps">
+                                <div className={`track-step ${["Order Placed", "Packed", "Out for Delivery", "Delivered"].includes(order.status) ? "active" : ""}`}>
+                                  <span className="dot" />
+                                  <span>Order Placed</span>
+                                </div>
+                                <div className={`track-step ${["Packed", "Out for Delivery", "Delivered"].includes(order.status) ? "active" : ""}`}>
+                                  <span className="dot" />
+                                  <span>Packed</span>
+                                </div>
+                                <div className={`track-step ${["Out for Delivery", "Delivered"].includes(order.status) ? "active" : ""}`}>
+                                  <span className="dot" />
+                                  <span>In Transit</span>
+                                </div>
+                                <div className={`track-step ${order.status === "Delivered" ? "active" : ""}`}>
+                                  <span className="dot" />
+                                  <span>Delivered</span>
+                                </div>
                               </div>
-                              <div className={`track-step ${["Out for Delivery", "Delivered"].includes(order.status) ? "active" : ""}`}>
-                                <span className="dot" />
-                                <span>In Transit</span>
-                              </div>
-                              <div className={`track-step ${order.status === "Delivered" ? "active" : ""}`}>
-                                <span className="dot" />
-                                <span>Delivered</span>
-                              </div>
-                            </div>
+                            )}
                           </div>
 
                           <div className="order-footer-row">
