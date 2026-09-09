@@ -18,30 +18,45 @@ function AccountPage() {
   const { ordersHistory, bookings, customerUser, loginCustomer, logoutCustomer } = useECommerce();
   const [activeTab, setActiveTab] = useState<"orders" | "consultations" | "profile">("orders");
 
-  // Dynamic user profile fields
-  const [profileName, setProfileName] = useState(() => customerUser?.name || ordersHistory[0]?.customerName || "");
-  const [profilePhone, setProfilePhone] = useState(() => customerUser?.phone || ordersHistory[0]?.phone || "");
-  const [profileEmail, setProfileEmail] = useState(() => customerUser?.email || "");
-  const [profileAddress, setProfileAddress] = useState(() => customerUser?.address || ordersHistory[0]?.address || "");
+  // Sign-in form state
+  const [authName, setAuthName] = useState("");
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPhone, setAuthPhone] = useState("");
+  const [authAddress, setAuthAddress] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+
+  // Profile editing state for logged-in user
+  const [profileName, setProfileName] = useState("");
+  const [profilePhone, setProfilePhone] = useState("");
+  const [profileEmail, setProfileEmail] = useState("");
+  const [profileAddress, setProfileAddress] = useState("");
   const [profileSavedMsg, setProfileSavedMsg] = useState(false);
 
-  // Sync state if customerUser changes
+  // Sync profile state when customerUser is logged in
   useEffect(() => {
     if (customerUser) {
-      if (customerUser.name) setProfileName(customerUser.name);
-      if (customerUser.phone) setProfilePhone(customerUser.phone);
-      if (customerUser.email) setProfileEmail(customerUser.email);
-      if (customerUser.address) setProfileAddress(customerUser.address);
-    } else if (ordersHistory.length > 0) {
-      const latest = ordersHistory[0];
-      if (latest.customerName) setProfileName(latest.customerName);
-      if (latest.phone) setProfilePhone(latest.phone);
-      if (latest.address) setProfileAddress(latest.address);
+      setProfileName(customerUser.name || "");
+      setProfilePhone(customerUser.phone || "");
+      setProfileEmail(customerUser.email || "");
+      setProfileAddress(customerUser.address || "");
     }
-  }, [customerUser, ordersHistory]);
+  }, [customerUser]);
+
+  const handleCustomerLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!authName.trim() || !authEmail.trim() || !authPhone.trim()) return;
+
+    loginCustomer({
+      name: authName.trim(),
+      email: authEmail.trim(),
+      phone: authPhone.trim(),
+      address: authAddress.trim(),
+    });
+  };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!customerUser) return;
     loginCustomer({
       name: profileName.trim(),
       email: profileEmail.trim(),
@@ -52,11 +67,123 @@ function AccountPage() {
     setTimeout(() => setProfileSavedMsg(false), 3500);
   };
 
+  // Filter orders matching logged-in user's email or phone number
+  const myOrders = customerUser
+    ? ordersHistory.filter(
+        (o) =>
+          (o.phone && customerUser.phone && o.phone.replace(/\D/g, "") === customerUser.phone.replace(/\D/g, "")) ||
+          (o.customerName && customerUser.name && o.customerName.toLowerCase().includes(customerUser.name.toLowerCase()))
+      )
+    : [];
+
+  // Display all orders if customer placed them in this session or list myOrders
+  const displayedOrders = myOrders.length > 0 ? myOrders : ordersHistory;
+
+  // Unauthenticated Customer Screen (Sign-In Required)
+  if (!customerUser) {
+    return (
+      <>
+        <PageHead
+          eyebrow="Customer Portal"
+          title="🔑 Customer Account Sign-In"
+          lead="Please sign in to access your personal health order history, track live shipments, and manage consultation appointments."
+        />
+
+        <section style={{ padding: "50px 0 100px" }}>
+          <div className="wrap" style={{ maxWidth: 520 }}>
+            <div className="card" style={{ padding: 36, border: "2px solid var(--line-gold)", boxShadow: "var(--shadow-md)" }}>
+              <div className="center" style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: "3rem", marginBottom: 8 }}>🌿</div>
+                <h2 style={{ margin: "0 0 6px", color: "var(--emerald-900)" }}>Customer Account Sign In</h2>
+                <p className="muted" style={{ fontSize: ".88rem", margin: 0 }}>
+                  Enter your email and contact details to sign in or create your customer account.
+                </p>
+              </div>
+
+              <form onSubmit={handleCustomerLoginSubmit}>
+                <div className="field">
+                  <label htmlFor="cname">Full Name *</label>
+                  <input
+                    id="cname"
+                    type="text"
+                    required
+                    placeholder="e.g. Radhika Sharma"
+                    value={authName}
+                    onChange={(e) => setAuthName(e.target.value)}
+                  />
+                </div>
+
+                <div className="row2">
+                  <div className="field">
+                    <label htmlFor="cemail">Email Address *</label>
+                    <input
+                      id="cemail"
+                      type="email"
+                      required
+                      placeholder="radhika@example.com"
+                      value={authEmail}
+                      onChange={(e) => setAuthEmail(e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="cphone">Mobile Phone *</label>
+                    <input
+                      id="cphone"
+                      type="tel"
+                      required
+                      placeholder="+91 98765 43210"
+                      value={authPhone}
+                      onChange={(e) => setAuthPhone(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="field">
+                  <label htmlFor="caddress">Default Delivery Address</label>
+                  <input
+                    id="caddress"
+                    type="text"
+                    placeholder="Flat / House No, Street, Landmark, Pune..."
+                    value={authAddress}
+                    onChange={(e) => setAuthAddress(e.target.value)}
+                  />
+                </div>
+
+                <div className="field">
+                  <label htmlFor="cpass">Account Password *</label>
+                  <input
+                    id="cpass"
+                    type="password"
+                    required
+                    placeholder="Enter or create a password..."
+                    value={authPassword}
+                    onChange={(e) => setAuthPassword(e.target.value)}
+                  />
+                </div>
+
+                <button className="btn btn-primary btn-block btn-lg" type="submit" style={{ marginTop: 16 }}>
+                  🔑 Sign In &amp; View My Account →
+                </button>
+              </form>
+
+              <div className="center" style={{ marginTop: 24, paddingTop: 16, borderTop: "1px dashed var(--line-gold)" }}>
+                <span className="muted" style={{ fontSize: ".82rem" }}>
+                  🔒 Official Kiana Naturopathy Portal • Your data is kept private &amp; secure.
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  // Authenticated Customer Dashboard
   return (
     <>
       <PageHead
         eyebrow="Customer Portal"
-        title="My Account & Orders"
+        title={`Welcome Back, ${customerUser.name}`}
         lead="Track your orders, view past invoices, and manage your naturopathic doctor appointments."
       />
 
@@ -68,9 +195,12 @@ function AccountPage() {
               <div className="user-profile-header">
                 <div className="avatar-circle">🌿</div>
                 <div>
-                  <strong>{customerUser?.name || ordersHistory[0]?.customerName || "Valued Client"}</strong>
+                  <strong style={{ fontSize: "1.05rem" }}>{customerUser.name}</strong>
                   <span className="muted" style={{ fontSize: ".84rem", display: "block" }}>
-                    {customerUser?.email || (ordersHistory[0] ? `Phone: ${ordersHistory[0].phone}` : "guest@kianaturopathy.com")}
+                    ✉️ {customerUser.email}
+                  </span>
+                  <span className="muted" style={{ fontSize: ".82rem", display: "block" }}>
+                    📞 {customerUser.phone}
                   </span>
                 </div>
               </div>
@@ -80,7 +210,7 @@ function AccountPage() {
                   className={`account-nav-item ${activeTab === "orders" ? "active" : ""}`}
                   onClick={() => setActiveTab("orders")}
                 >
-                  📦 My Orders ({ordersHistory.length})
+                  📦 My Orders ({displayedOrders.length})
                 </button>
 
                 <button
@@ -101,18 +231,15 @@ function AccountPage() {
                   🤍 Saved Wishlist
                 </Link>
 
-                {customerUser && (
-                  <button
-                    className="account-nav-item"
-                    style={{ color: "#DC2626", marginTop: 12 }}
-                    onClick={() => {
-                      logoutCustomer();
-                      alert("You have been signed out of your customer account.");
-                    }}
-                  >
-                    🚪 Sign Out
-                  </button>
-                )}
+                <button
+                  className="account-nav-item"
+                  style={{ color: "#DC2626", marginTop: 12, fontWeight: 700 }}
+                  onClick={() => {
+                    logoutCustomer();
+                  }}
+                >
+                  🚪 Sign Out
+                </button>
               </nav>
             </aside>
 
@@ -120,8 +247,8 @@ function AccountPage() {
             <main className="account-main-content">
               {activeTab === "orders" && (
                 <div>
-                  <h2>Order History ({ordersHistory.length})</h2>
-                  {ordersHistory.length === 0 ? (
+                  <h2>Order History ({displayedOrders.length})</h2>
+                  {displayedOrders.length === 0 ? (
                     <div className="card center" style={{ padding: "40px 20px" }}>
                       <span style={{ fontSize: "2.5rem" }}>📦</span>
                       <h3>No Orders Placed Yet</h3>
@@ -129,12 +256,12 @@ function AccountPage() {
                         When you place an order in the wellness shop, it will appear here with live tracking updates!
                       </p>
                       <Link className="btn btn-primary" to="/shop" style={{ marginTop: 14 }}>
-                        Shop Now
+                        Browse Shop &amp; Place Order
                       </Link>
                     </div>
                   ) : (
                     <div className="orders-list">
-                      {ordersHistory.map((order) => (
+                      {displayedOrders.map((order) => (
                         <div className="card order-card" key={order.id}>
                           <div className="order-header-row">
                             <div>
