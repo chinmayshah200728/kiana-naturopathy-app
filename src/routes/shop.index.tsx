@@ -322,13 +322,6 @@ function ShopPage() {
 
       {/* Quiz Modal */}
       <RemedyQuizModal isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
-
-      {/* Custom Combo Builder Modal */}
-      <CustomComboBuilder
-        isOpen={isComboBuilderOpen}
-        onClose={() => setIsComboBuilderOpen(false)}
-        onComboSaved={refreshSavedCombos}
-      />
     </>
   );
 }
