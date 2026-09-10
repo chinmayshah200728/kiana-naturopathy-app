@@ -35,6 +35,7 @@ function AdminPage() {
     ordersHistory,
     addOrderToHistory,
     updateOrderStatus,
+    deleteOrderFromHistory,
     reloadOrdersHistory,
     clearAllOrders,
     productsList,
@@ -173,6 +174,14 @@ function AdminPage() {
   const handleCancelOrder = (orderId: string) => {
     if (window.confirm("Are you sure you want to cancel this order? Cancelled orders will automatically be excluded from total sales revenue and growth graphs.")) {
       handleUpdateStatus(orderId, "Cancelled");
+    }
+  };
+
+  // Permanently Delete Order Handler
+  const handleDeleteOrder = (orderId: string, orderNumber: string) => {
+    if (window.confirm(`Are you sure you want to permanently remove order #${orderNumber} from the dashboard? This action cannot be undone.`)) {
+      deleteOrderFromHistory(orderId);
+      setManualOrders((prev) => prev.filter((o) => o.id !== orderId && o.orderNumber !== orderNumber));
     }
   };
 
@@ -793,14 +802,24 @@ function AdminPage() {
                               📄 Slip
                             </button>
                             {o.status === "Cancelled" ? (
-                              <button
-                                className="btn btn-outline btn-sm"
-                                style={{ color: "#059669", borderColor: "#A7F3D0", background: "#ECFDF5" }}
-                                onClick={() => handleUpdateStatus(o.id, "Order Placed")}
-                                title="Re-open cancelled order"
-                              >
-                                ↩️ Restore
-                              </button>
+                              <>
+                                <button
+                                  className="btn btn-outline btn-sm"
+                                  style={{ color: "#059669", borderColor: "#A7F3D0", background: "#ECFDF5" }}
+                                  onClick={() => handleUpdateStatus(o.id, "Order Placed")}
+                                  title="Re-open cancelled order"
+                                >
+                                  ↩️ Restore
+                                </button>
+                                <button
+                                  className="btn btn-outline btn-sm"
+                                  style={{ color: "#991B1B", borderColor: "#FCA5A5", background: "#FEF2F2" }}
+                                  onClick={() => handleDeleteOrder(o.id, o.orderNumber)}
+                                  title="Permanently remove cancelled order from dashboard"
+                                >
+                                  🗑️ Remove Order
+                                </button>
+                              </>
                             ) : (
                               <button
                                 className="btn btn-outline btn-sm"

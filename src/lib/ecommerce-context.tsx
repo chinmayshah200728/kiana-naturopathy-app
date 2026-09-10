@@ -111,6 +111,7 @@ type ECommerceContextValue = {
   ordersHistory: OrderRecord[];
   addOrderToHistory: (order: OrderRecord) => void;
   updateOrderStatus: (orderId: string, status: OrderRecord["status"]) => void;
+  deleteOrderFromHistory: (orderId: string) => void;
   reloadOrdersHistory: () => void;
   clearAllOrders: () => void;
 };
@@ -434,6 +435,18 @@ export function ECommerceProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const deleteOrderFromHistory = useCallback((orderId: string) => {
+    setOrdersHistory((prev) => {
+      const next = prev.filter((o) => o.id !== orderId && o.orderNumber !== orderId);
+      try {
+        window.localStorage.setItem(ORDERS_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }, []);
+
   const reloadOrdersHistory = useCallback(() => {
     try {
       const savedOrders = window.localStorage.getItem(ORDERS_KEY);
@@ -500,6 +513,7 @@ export function ECommerceProvider({ children }: { children: ReactNode }) {
         ordersHistory,
         addOrderToHistory,
         updateOrderStatus,
+        deleteOrderFromHistory,
         reloadOrdersHistory,
         clearAllOrders,
       }}
