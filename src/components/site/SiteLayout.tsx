@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import { useCart } from "@/lib/cart";
 import { useECommerce } from "@/lib/ecommerce-context";
 import { RemedyQuizModal } from "../ecommerce/RemedyQuizModal";
+import { WhatsAppOrderTrackerWidget } from "../ecommerce/WhatsAppOrderTrackerWidget";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -254,6 +255,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
       {/* Remedy Quiz Modal */}
       <RemedyQuizModal isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
+
+      {/* Persistent WhatsApp Support & Live Order Tracker Widget */}
+      <WhatsAppOrderTrackerWidget />
     </div>
   );
 }
