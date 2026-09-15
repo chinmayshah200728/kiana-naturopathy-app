@@ -5,6 +5,7 @@ import { useCart } from "@/lib/cart";
 import { useECommerce } from "@/lib/ecommerce-context";
 import { RemedyQuizModal } from "../ecommerce/RemedyQuizModal";
 import { WhatsAppOrderTrackerWidget } from "../ecommerce/WhatsAppOrderTrackerWidget";
+import { AIRemedyChatbotModal } from "../ecommerce/AIRemedyChatbotModal";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -23,6 +24,7 @@ export const DISCLAIMER =
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
   const { count } = useCart();
   const { wishlistCount, setIsCartDrawerOpen, setIsSearchOpen, setIsBookingOpen, darkMode, toggleDarkMode } =
     useECommerce();
@@ -56,6 +58,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               </Link>
             ))}
             <div className="mobile-only-drawer-actions">
+              <button className="btn btn-primary btn-block" onClick={() => { setOpen(false); setIsAIChatOpen(true); }} style={{ marginBottom: 8, background: "linear-gradient(135deg, #064E3B 0%, #047857 100%)" }}>
+                🤖 Ask AI Remedy Doctor
+              </button>
               <button className="btn btn-gold btn-block" onClick={() => { setOpen(false); setIsBookingOpen(true); }}>
                 🩺 Book Doctor Consultation
               </button>
@@ -66,6 +71,15 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="head-actions" style={{ marginLeft: "auto" }}>
+            {/* AI Remedy Guide Button (Desktop) */}
+            <button
+              className="btn btn-outline btn-sm desktop-only-btn"
+              onClick={() => setIsAIChatOpen(true)}
+              style={{ fontWeight: 700, borderColor: "var(--emerald-800)", color: "var(--emerald-900)" }}
+              title="AI Naturopathy Remedy Assistant"
+            >
+              🤖 AI Remedy Guide
+            </button>
             {/* Dark Mode Toggle */}
             <button
               className="head-icon-btn"
@@ -255,6 +269,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
       {/* Remedy Quiz Modal */}
       <RemedyQuizModal isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
+
+      {/* AI Remedy Chatbot Advisor Modal */}
+      <AIRemedyChatbotModal isOpen={isAIChatOpen} onClose={() => setIsAIChatOpen(false)} />
 
       {/* Persistent WhatsApp Support & Live Order Tracker Widget */}
       <WhatsAppOrderTrackerWidget />
