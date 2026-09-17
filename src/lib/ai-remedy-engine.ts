@@ -116,7 +116,7 @@ export function processAIRemedyQuery(
   } else if (detectedTopic.includes("Skin")) {
     adviceText = `True skin radiance comes from purifying the body both internally and topically. Synthetic chemicals can irritate skin barriers, whereas gentle French clays, virgin neem oil, and antioxidant-rich teas clear impurites naturally. Here are the top practitioner formulations for clear, glowing skin:`;
   } else if (detectedTopic.includes("Immunity")) {
-    adviceText = `Strong immunity relies on bioavailable Vitamin C, natural antioxidants, and gut vitality. Wild cold-pressed amla juice and raw organic honeys provide immediate phytonutrients to protect cellular health. Here are the best practitioner-selected immunity boosters:`;
+    adviceText = `Strong immunity relies on bioavailable Vitamin C, natural antioxidants, and gut vitality. Wild cold-pressed amla juice and raw pure & natural honeys provide immediate phytonutrients to protect cellular health. Here are the best practitioner-selected immunity boosters:`;
   } else if (detectedTopic.includes("Hair")) {
     adviceText = `Hair vitality reflects internal nourishment and scalp circulation. Cold-pressed virgin herbal oils gently nourish hair follicles without synthetic silicones. Here are our recommended remedies:`;
   } else {

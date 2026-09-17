@@ -173,6 +173,18 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         </Link>
       </nav>
 
+      {/* Floating AI Assistant CTA */}
+      <button
+        type="button"
+        className="ai-float"
+        onClick={() => setIsAIChatOpen(true)}
+        aria-label="Ask AI Remedy Doctor"
+        title="Ask Dr. Kiana AI Assistant for Natural Remedies"
+      >
+        <span className="ai-float-icon">🤖</span>
+        <span className="ai-float-text">Ask AI Doctor</span>
+      </button>
+
       {/* Floating WhatsApp CTA */}
       <a
         className="wa-float"

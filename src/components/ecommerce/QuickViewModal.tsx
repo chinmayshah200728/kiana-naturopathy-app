@@ -32,7 +32,7 @@ export function QuickViewModal() {
             <img src={product.image} alt={product.name} className="quickview-img" />
             <div className="quickview-badges">
               {product.bestseller && <span className="badge badge-gold">Bestseller</span>}
-              {product.organic && <span className="badge badge-green">100% Organic</span>}
+              {product.organic && <span className="badge badge-green">100% Pure &amp; Natural</span>}
               {product.isNew && <span className="badge badge-accent">New</span>}
             </div>
           </div>

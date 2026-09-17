@@ -19,7 +19,7 @@ export const HEALTH_BUNDLES: HealthBundle[] = [
     id: "bundle-detox-trio",
     slug: "full-body-detox-immunity-trio",
     title: "Full Body Detox & Immunity Trio",
-    tagline: "Complete 3-step internal reset: Gentle Detox Kit + Organic Triphala + Cold-Pressed Amla Juice",
+    tagline: "Complete 3-step internal reset: Gentle Detox Kit + Pure & Natural Triphala + Cold-Pressed Amla Juice",
     category: "Detox Kits",
     image: "/assets/img/p-detox.jpg",
     discountPercent: 20,
@@ -32,7 +32,7 @@ export const HEALTH_BUNDLES: HealthBundle[] = [
       },
       {
         slug: "triphala-powder",
-        name: "Organic Triphala Churna Powder",
+        name: "Pure & Natural Triphala Churna Powder",
         price: 399,
         image: "/assets/img/p-supplements.jpg",
       },

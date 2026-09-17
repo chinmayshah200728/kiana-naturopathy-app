@@ -121,7 +121,7 @@ function ShopPage() {
       <PageHead
         eyebrow="Wellness Shop"
         title="Natural remedies, practitioner selected"
-        lead="Pure herbal supplements, cold-pressed oils, organic honey, teas, and gentle detox kits. Free shipping on orders over ₹999."
+        lead="Pure herbal supplements, cold-pressed oils, pure & natural honey, teas, and gentle detox kits. Free shipping on orders over ₹999."
       />
 
       <section style={{ padding: "40px 0 80px" }}>
@@ -221,7 +221,7 @@ function ShopPage() {
                   checked={onlyOrganic}
                   onChange={(e) => setOnlyOrganic(e.target.checked)}
                 />
-                🌿 100% Organic
+                🌿 100% Pure & Natural
               </label>
 
               <label className="checkbox-label">
@@ -272,7 +272,7 @@ function ShopPage() {
               )}
               {onlyOrganic && (
                 <span className="active-filter-tag">
-                  Organic <button onClick={() => setOnlyOrganic(false)}>✕</button>
+                  Pure & Natural <button onClick={() => setOnlyOrganic(false)}>✕</button>
                 </span>
               )}
               {onlyInStock && (

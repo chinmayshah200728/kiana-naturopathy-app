@@ -372,7 +372,7 @@ function AdminPage() {
       short: newProdShort.trim() || `${newProdName} - Natural Wellness Formula`,
       description: newProdDesc.trim() || "Handcrafted with pure ayurvedic and practitioner-tested natural ingredients.",
       benefits: ["Supports overall vitality and natural immunity", "100% practitioner approved and pure"],
-      ingredients: ["Herbal extract blend", "Organic natural powder"],
+      ingredients: ["Herbal extract blend", "Pure and natural powder"],
       usage: "Take as directed by your healthcare consultant.",
       price: priceNum,
       comparePrice: compareNum,

@@ -349,7 +349,7 @@ export function AIRemedyChatbotModal({ isOpen, onClose }: Props) {
                               {prod.name}
                             </h4>
                             <span style={{ fontSize: ".76rem", color: "#6B7280", display: "block" }}>
-                              {prod.category} {prod.organic && "• 🌿 100% Organic"}
+                              {prod.category} {prod.organic && "• 🌿 100% Pure & Natural"}
                             </span>
                             <div style={{ fontWeight: 800, color: "#047857", fontSize: ".88rem", marginTop: 2 }}>
                               {formatINR(prod.price)}

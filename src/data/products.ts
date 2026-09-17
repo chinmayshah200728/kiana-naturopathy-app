@@ -46,7 +46,7 @@ export const products: Product[] = [
       "Free from harsh chemical laxatives or artificial stimulants"
     ],
     ingredients: [
-      "Organic Wheatgrass & Moringa Leaf Powder",
+      "Pure & Natural Wheatgrass & Moringa Leaf Powder",
       "Senna-Free Triphala & Licorice Infusion Sachets",
       "Lemon-Ginger-Tulsi Herbal Tea Bags"
     ],
@@ -62,7 +62,7 @@ export const products: Product[] = [
     bestseller: true,
     isNew: false,
     organic: true,
-    tags: ["Detox", "Organic", "Digestive Health", "Best Seller"],
+    tags: ["Detox", "Pure & Natural", "Digestive Health", "Best Seller"],
     reviewsList: [
       {
         id: "r1",
@@ -110,7 +110,7 @@ export const products: Product[] = [
     featured: false,
     bestseller: true,
     organic: true,
-    tags: ["Immunity", "Vitamin C", "Organic", "Juice"],
+    tags: ["Immunity", "Vitamin C", "Pure & Natural", "Juice"],
     reviewsList: [
       {
         id: "r3",
@@ -126,7 +126,7 @@ export const products: Product[] = [
     slug: "ashwagandha-capsules",
     name: "KSM-66 Ashwagandha Root Capsules",
     category: "Herbal Supplements",
-    short: "High-potency organic adaptogen for stress relief, calm energy, and deep sleep.",
+    short: "High-potency pure and natural adaptogen for stress relief, calm energy, and deep sleep.",
     description:
       "Formulated with full-spectrum KSM-66 Ashwagandha root extract. Recognized in traditional Indian wellness for mitigating cortisol levels, enhancing stamina, and fostering restorative night sleep.",
     benefits: [
@@ -250,7 +250,7 @@ export const products: Product[] = [
     category: "Skin Care",
     short: "Deep pore cleansing clay mask to absorb oil, calm breakouts, and refine skin texture.",
     description:
-      "A therapeutic botanical clay treatment combining mineral-rich French green clay with organic Neem leaf powder and cooling Aloe Vera. Gently pulls out impurities and unclogs pores without stripping moisture.",
+      "A therapeutic botanical clay treatment combining mineral-rich French green clay with pure and natural Neem leaf powder and cooling Aloe Vera. Gently pulls out impurities and unclogs pores without stripping moisture.",
     benefits: [
       "Absorbs excessive sebum and shrinks visible pores",
       "Calms active acne redness and skin irritation",
@@ -259,7 +259,7 @@ export const products: Product[] = [
     ],
     ingredients: [
       "French Montmorillonite Green Clay",
-      "Organic Neem Leaf Powder",
+      "Pure & Natural Neem Leaf Powder",
       "Cold-Extracted Aloe Vera Gel",
       "Vetiver Hydrosol"
     ],
@@ -350,7 +350,7 @@ export const products: Product[] = [
   {
     slug: "raw-forest-honey",
     name: "Wild Multiflora Raw Forest Honey",
-    category: "Organic Honey",
+    category: "Pure & Natural Honey",
     short: "Raw, unpasteurized honey harvested from wild forest beehives. Zero added sugar syrup.",
     description:
       "Collected by tribal bee-gatherers in dense forest reserves. Never heated above hive temperature or fine-filtered, retaining live beneficial enzymes, wild pollen, and mineral richness.",
@@ -386,19 +386,19 @@ export const products: Product[] = [
   },
   {
     slug: "triphala-powder",
-    name: "Organic Triphala Churna Powder",
+    name: "Pure & Natural Triphala Churna Powder",
     category: "Health Powders",
-    short: "Classic 3-fruit digestion & bowel regularity formula milled from organic fruits.",
+    short: "Classic 3-fruit digestion & bowel regularity formula milled from pure and natural fruits.",
     description:
       "Formulated with equal ratios of Amla, Haritaki, and Bibhitaki. Takes care of daily bowel regularity, gently cleanses colon residues, and aids nutrient assimilation.",
     benefits: [
       "Supports smooth, painless morning bowel elimination",
       "Gently cleanses digestive tract without creating dependency",
       "Rich in natural vitamin C and polyphenol antioxidants",
-      "Organic certified raw fruit powder"
+      "Pure & natural certified raw fruit powder"
     ],
     ingredients: [
-      "Equal parts organic Amla (Emblica Officinalis)",
+      "Equal parts pure & natural Amla (Emblica Officinalis)",
       "Haritaki (Terminalia Chebula)",
       "Bibhitaki (Terminalia Bellirica)"
     ],
@@ -413,16 +413,16 @@ export const products: Product[] = [
     featured: false,
     bestseller: true,
     organic: true,
-    tags: ["Triphala", "Digestion", "Colon Cleanse", "Organic"],
+    tags: ["Triphala", "Digestion", "Colon Cleanse", "Pure & Natural"],
     reviewsList: []
   },
   {
     slug: "tulsi-green-tea",
     name: "Holy Basil Tulsi Ginger Green Tea",
     category: "Herbal Teas",
-    short: "Whole-leaf organic green tea paired with spicy ginger & fragrant Krishna Tulsi.",
+    short: "Whole-leaf pure & natural green tea paired with spicy ginger & fragrant Krishna Tulsi.",
     description:
-      "Whole-leaf Assam green tea hand-blended with organic Krishna Tulsi leaves, dried ginger bits, and fragrant lemongrass. Clean antioxidant energy without jittery caffeine crashes.",
+      "Whole-leaf Assam green tea hand-blended with pure & natural Krishna Tulsi leaves, dried ginger bits, and fragrant lemongrass. Clean antioxidant energy without jittery caffeine crashes.",
     benefits: [
       "Boosts metabolism and supports fat oxidation",
       "Soothes digestive heaviness after meals",
@@ -430,7 +430,7 @@ export const products: Product[] = [
       "Biodegradable pyramid teabags"
     ],
     ingredients: [
-      "Organic Whole Green Tea Leaves",
+      "Pure & Natural Whole Green Tea Leaves",
       "Krishna Tulsi Leaves",
       "Dried Ginger Root Bits",
       "Lemongrass"
@@ -446,7 +446,7 @@ export const products: Product[] = [
     featured: true,
     bestseller: true,
     organic: true,
-    tags: ["Green Tea", "Tulsi", "Metabolism", "Organic"],
+    tags: ["Green Tea", "Tulsi", "Metabolism", "Pure & Natural"],
     reviewsList: []
   },
   {
@@ -455,7 +455,7 @@ export const products: Product[] = [
     category: "Skin Care",
     short: "100% Pure unrefined neem seed oil for acne control, scalp care & skin relief.",
     description:
-      "Extracted from organic neem seeds using traditional cold-pressing. Natural antimicrobial and anti-fungal properties help soothe scalp dandruff, acne blemishes, and dry skin patches.",
+      "Extracted from pure & natural neem seeds using traditional cold-pressing. Natural antimicrobial and anti-fungal properties help soothe scalp dandruff, acne blemishes, and dry skin patches.",
     benefits: [
       "Natural antibacterial treatment for acne spots",
       "Nourishes scalp and helps prevent dandruff flakes",
@@ -474,12 +474,12 @@ export const products: Product[] = [
     featured: false,
     isNew: true,
     organic: true,
-    tags: ["Neem", "Acne", "Scalp Care", "Organic"],
+    tags: ["Neem", "Acne", "Scalp Care", "Pure & Natural"],
     reviewsList: []
   },
   {
     slug: "shatavari-hormone-support",
-    name: "Shatavari Organic Root Extract",
+    name: "Shatavari Pure & Natural Root Extract",
     category: "Herbal Supplements",
     short: "Traditional women's tonic for hormonal balance, cycle rhythm & vitality.",
     description:
@@ -488,9 +488,9 @@ export const products: Product[] = [
       "Supports healthy female hormonal equilibrium",
       "Promotes smooth menstrual cycles and relieves PMS discomfort",
       "Nourishes reproductive tissues and vitality",
-      "100% Organic certified vegetarian capsules"
+      "100% Pure & Natural certified vegetarian capsules"
     ],
-    ingredients: ["Organic Shatavari Root Extract (500mg)", "Plant Cellulose Capsule"],
+    ingredients: ["Pure & Natural Shatavari Root Extract (500mg)", "Plant Cellulose Capsule"],
     usage: "Take 1 capsule twice daily with warm milk or water.",
     price: 699,
     comparePrice: 849,
@@ -502,7 +502,7 @@ export const products: Product[] = [
     featured: true,
     isNew: true,
     organic: true,
-    tags: ["Women Wellness", "PCOS", "Hormonal Health", "Organic"],
+    tags: ["Women Wellness", "PCOS", "Hormonal Health", "Pure & Natural"],
     reviewsList: []
   },
   {

@@ -98,7 +98,7 @@ function HomePage() {
             <div className="trust-feature-item">
               <span className="feature-icon">🌿</span>
               <div>
-                <strong>100% Pure &amp; Organic</strong>
+                <strong>100% Pure &amp; Natural</strong>
                 <p>No synthetic chemicals or fillers</p>
               </div>
             </div>
@@ -134,7 +134,7 @@ function HomePage() {
             <div className="eyebrow">Practitioner Selected</div>
             <h2>Featured Natural Remedies</h2>
             <p className="lead">
-              Herbal supplements, cold-pressed oils, organic honey, and detox kits — trusted by thousands.
+              Herbal supplements, cold-pressed oils, pure & natural honey, and detox kits — trusted by thousands.
             </p>
           </div>
 
