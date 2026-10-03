@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useECommerce } from "@/lib/ecommerce-context";
 
 const DOCTORS = [
-  { id: "d1", name: "Dr. Meenal Joshi, BNYS", role: "Chief Naturopath", exp: "18+ Yrs Exp" },
+  { id: "d1", name: "Dr. Kiana Sharma, BNYS, MD", role: "Founder & Chief Naturopath", exp: "18+ Yrs Exp", avatar: "/assets/img/dr-kiana-profile.jpg" },
   { id: "d2", name: "Dr. Aditya Rane, BNYS", role: "Detox & Hydrotherapy Lead", exp: "14+ Yrs Exp" },
   { id: "d3", name: "Kavita Pillai, MSc", role: "Clinical Dietitian", exp: "12+ Yrs Exp" },
 ];

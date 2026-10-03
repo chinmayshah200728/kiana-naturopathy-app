@@ -29,8 +29,8 @@ const VALUES = [
 ];
 
 const TEAM = [
-  { name: "Dr. Meenal Joshi, BNYS", role: "Chief Naturopath", text: "18 years in clinical naturopathy, with a focus on metabolic and digestive concerns." },
-  { name: "Dr. Aditya Rane, BNYS", role: "Therapies & Detox Lead", text: "Designs residential detox programmes and supervises fasting protocols." },
+  { name: "Dr. Kiana Sharma, BNYS, MD", role: "Founder & Chief Naturopath", text: "18+ years in clinical naturopathy, clinical nutrition, and functional plant remedies.", image: "/assets/img/dr-kiana-profile.jpg" },
+  { name: "Dr. Aditya Rane, BNYS", role: "Therapies & Detox Lead", text: "14+ years designing residential detox programmes and supervising fasting protocols." },
   { name: "Kavita Pillai, MSc Dietetics", role: "Clinical Dietitian", text: "Builds regional Indian meal plans for diabetes, PCOS and weight management." },
   { name: "Rohan Kadam", role: "Yoga & Movement", text: "Therapeutic yoga for spine, joint and stress-related concerns." },
   { name: "Dr. Sana Shaikh, BNYS", role: "Women's Wellness", text: "PCOS, cycle health and pre/post-natal lifestyle support." },
@@ -45,6 +45,48 @@ function AboutPage() {
         title="A clinic built on honest, practical care"
         lead="We started in 2008 with a simple belief: most people already know what to do — they need a plan that fits their real life, and someone who follows up."
       />
+
+      {/* Featured Founder Spotlight */}
+      <section style={{ padding: "60px 0", background: "var(--cream-100)", borderBottom: "1px solid var(--line-gold)" }}>
+        <div className="wrap">
+          <div className="grid g2" style={{ alignItems: "center", gap: 40 }}>
+            <div style={{ textAlign: "center" }}>
+              <div style={{
+                borderRadius: "24px",
+                overflow: "hidden",
+                boxShadow: "0 16px 40px rgba(6, 78, 59, 0.15)",
+                border: "4px solid #fff",
+                maxWidth: 420,
+                margin: "0 auto"
+              }}>
+                <img
+                  src="/assets/img/dr-kiana-profile.jpg"
+                  alt="Dr. Kiana Sharma - Founder & Chief Naturopath"
+                  style={{ width: "100%", height: 440, objectFit: "cover", objectPosition: "top" }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className="eyebrow">Founder &amp; Chief Practitioner</div>
+              <h2>Dr. Kiana Sharma</h2>
+              <span className="tag" style={{ background: "var(--emerald-900)", color: "var(--gold-400)", fontSize: "0.9rem", padding: "6px 14px", borderRadius: 50, fontWeight: 700 }}>
+                BNYS, MD (Naturopathy &amp; Clinical Nutrition)
+              </span>
+              <p className="lead" style={{ marginTop: 16 }}>
+                Dr. Kiana Sharma founded Kiana Naturopathy &amp; Wellness Centre in 2008 to bring drug-free, root-cause healing into everyday Indian households.
+              </p>
+              <p style={{ color: "var(--ink-700)", lineHeight: 1.7 }}>
+                Having completed her BNYS degree and MD in Clinical Nutrition with distinction, Dr. Kiana has spent 18+ years perfecting natural protocols for gut health, metabolic balance, hormonal harmony, and stress restoration.
+              </p>
+              <p style={{ color: "var(--ink-700)", lineHeight: 1.7 }}>
+                She personally formulates our practitioner-grade herbal teas, cold-pressed oils, and natural supplement blends, ensuring every remedy meets Ayush and GMP standards.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section>
         <div className="wrap">
           <div className="grid g2">
@@ -70,6 +112,7 @@ function AboutPage() {
           </div>
         </div>
       </section>
+
       <section className="alt">
         <div className="wrap">
           <div className="center">
@@ -78,8 +121,16 @@ function AboutPage() {
           </div>
           <div className="grid g3" style={{ marginTop: 30 }}>
             {TEAM.map((member) => (
-              <div className="card" key={member.name}>
-                <div className="icon-badge">🌿</div>
+              <div className="card" key={member.name} style={{ overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                {member.image ? (
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    style={{ height: 220, width: "100%", objectFit: "cover", objectPosition: "top", borderRadius: "8px", marginBottom: 12 }}
+                  />
+                ) : (
+                  <div className="icon-badge">🌿</div>
+                )}
                 <h3>{member.name}</h3>
                 <span className="tag">{member.role}</span>
                 <p className="muted" style={{ marginTop: 10, marginBottom: 0 }}>{member.text}</p>

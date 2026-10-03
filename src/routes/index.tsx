@@ -182,12 +182,98 @@ function HomePage() {
         </div>
       </section>
 
+      {/* Meet Our Founder & Chief Naturopath Section */}
+      <section style={{ padding: "70px 0", background: "var(--cream-100)", borderTop: "1px solid var(--line-gold)", borderBottom: "1px solid var(--line-gold)" }}>
+        <div className="wrap">
+          <div className="grid g2" style={{ alignItems: "center", gap: 48 }}>
+            <div style={{ position: "relative" }}>
+              <div style={{
+                borderRadius: "24px",
+                overflow: "hidden",
+                boxShadow: "0 20px 50px rgba(6, 78, 59, 0.18)",
+                border: "4px solid #fff",
+                position: "relative"
+              }}>
+                <img
+                  src="/assets/img/dr-kiana-profile.jpg"
+                  alt="Dr. Kiana Sharma - Founder & Chief Naturopath"
+                  style={{ width: "100%", height: "460px", objectFit: "cover", objectPosition: "top" }}
+                />
+                <div style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  background: "linear-gradient(to top, rgba(6, 78, 59, 0.95), transparent)",
+                  padding: "24px 20px 20px",
+                  color: "#fff"
+                }}>
+                  <h3 style={{ color: "#FEEFDD", margin: 0, fontSize: "1.35rem" }}>Dr. Kiana Sharma</h3>
+                  <span style={{ fontSize: ".88rem", opacity: 0.9, fontWeight: 600 }}>BNYS, MD (Naturopathy &amp; Clinical Nutrition)</span>
+                </div>
+              </div>
+              <div style={{
+                position: "absolute",
+                top: -16,
+                right: -16,
+                background: "var(--gold-gradient)",
+                color: "var(--emerald-950)",
+                padding: "10px 18px",
+                borderRadius: "50px",
+                fontWeight: 800,
+                fontSize: "0.85rem",
+                boxShadow: "var(--shadow-gold)"
+              }}>
+                ⭐ 18+ Yrs Experience
+              </div>
+            </div>
+
+            <div>
+              <div className="eyebrow">Meet Our Founder &amp; Chief Practitioner</div>
+              <h2 style={{ fontSize: "2.3rem", color: "var(--emerald-950)" }}>Dr. Kiana Sharma</h2>
+              <p style={{ fontWeight: 700, color: "var(--emerald-800)", fontSize: "1.05rem" }}>
+                Founder &amp; Lead Naturopathic Doctor
+              </p>
+              <p className="lead" style={{ fontSize: "1rem", marginTop: 12 }}>
+                With over 18 years of dedicated clinical practice in naturopathy, plant medicine, and functional nutrition, Dr. Kiana has personally guided 12,000+ patients to sustainable, drug-free wellness.
+              </p>
+              <p style={{ color: "var(--ink-700)", lineHeight: 1.7 }}>
+                She founded Kiana Naturopathy &amp; Wellness Centre to blend traditional Indian clinical nutrition, therapeutic yoga, hydrotherapy, and practitioner-formulated herbal remedies into accessible daily routines.
+              </p>
+
+              <blockquote style={{
+                margin: "20px 0",
+                padding: "16px 20px",
+                background: "#fff",
+                borderLeft: "4px solid var(--gold-500)",
+                borderRadius: "0 12px 12px 0",
+                fontStyle: "italic",
+                color: "var(--emerald-900)",
+                fontWeight: 600,
+                boxShadow: "var(--shadow-sm)"
+              }}>
+                "True healing begins when we align daily food, mindful movement, and pure plant remedies with the body's innate wisdom."
+              </blockquote>
+
+              <div style={{ display: "flex", gap: 14, marginTop: 24, flexWrap: "wrap" }}>
+                <Link className="btn btn-gold" to="/about">
+                  Read Dr. Kiana's Profile &amp; Story →
+                </Link>
+                <Link className="btn btn-primary" to="/naturopathy">
+                  Explore Naturopathy Care
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Who We Are */}
       <section style={{ padding: "60px 0" }}>
         <div className="wrap">
           <div className="grid g2" style={{ alignItems: "center" }}>
             <div>
-              <div className="eyebrow">Who we are</div>
+              <div className="eyebrow">Sanctuary &amp; Therapies</div>
               <h2>Natural approaches for better health</h2>
               <p className="lead">
                 Kiana Naturopathy &amp; Wellness Centre is a naturopathy and wellness clinic in Pune.
@@ -203,9 +289,9 @@ function HomePage() {
               </Link>
             </div>
             <img
-              src="/assets/img/therapies.jpg"
-              alt="Natural therapy treatment room"
-              style={{ borderRadius: "var(--radius)", boxShadow: "var(--shadow)" }}
+              src="/assets/img/naturopathy-sanctuary-bg.jpg"
+              alt="Natural herbal apothecary sanctuary"
+              style={{ borderRadius: "var(--radius)", boxShadow: "var(--shadow)", height: 380, objectFit: "cover", width: "100%" }}
             />
           </div>
         </div>
