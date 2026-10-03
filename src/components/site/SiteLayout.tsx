@@ -70,12 +70,12 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             </div>
           </nav>
 
-          <div className="head-actions" style={{ marginLeft: "auto" }}>
+          <div className="head-actions">
             {/* AI Remedy Guide Button (Desktop) */}
             <button
               className="btn btn-outline btn-sm desktop-only-btn"
               onClick={() => setIsAIChatOpen(true)}
-              style={{ fontWeight: 700, borderColor: "var(--emerald-800)", color: "var(--emerald-900)" }}
+              style={{ fontWeight: 700, borderColor: "var(--emerald-800)", color: "var(--emerald-900)", whiteSpace: "nowrap", flexShrink: 0 }}
               title="AI Naturopathy Remedy Assistant"
             >
               🤖 AI Remedy Guide
@@ -124,6 +124,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             <button
               className="btn btn-gold btn-sm desktop-only-btn"
               onClick={() => setIsBookingOpen(true)}
+              style={{ whiteSpace: "nowrap", flexShrink: 0 }}
             >
               Book Doctor 🩺
             </button>
