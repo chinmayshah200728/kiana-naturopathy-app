@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useState, useMemo, useEffect } from "react";
 import {
   ResponsiveContainer,
@@ -15,6 +16,7 @@ import { PageHead } from "@/components/site/SiteLayout";
 import { products as PRODUCTS, type Product } from "@/data/products";
 import { formatINR } from "@/lib/cart";
 import { useECommerce, type OrderRecord } from "@/lib/ecommerce-context";
+import { adminInitiateRefund } from "@/lib/payment.functions";
 
 
 
@@ -169,6 +171,27 @@ function AdminPage() {
   const [newProdInStock, setNewProdInStock] = useState(true);
   const [newProdStockCount, setNewProdStockCount] = useState("25");
   const [newProdDesc, setNewProdDesc] = useState("");
+
+  const initiateRefundServer = useServerFn(adminInitiateRefund);
+
+  // Admin Initiated Razorpay Refund Handler
+  const handleRefundRazorpayOrder = async (orderNumber: string, total: number) => {
+    if (
+      window.confirm(
+        `Are you sure you want to issue an official Razorpay refund of ₹${total} for Order #${orderNumber}? This will trigger the Razorpay Refund API.`
+      )
+    ) {
+      try {
+        const res = await initiateRefundServer({
+          data: { orderNumber, reason: "Admin Dashboard Initiated Refund" },
+        });
+        alert(`Refund Processed Successfully! Razorpay Refund ID: ${res.refundId}`);
+        handleUpdateStatus(orderNumber, "Cancelled");
+      } catch (err) {
+        alert(err instanceof Error ? err.message : "Refund request failed.");
+      }
+    }
+  };
 
   // Cancel Order Handler
   const handleCancelOrder = (orderId: string) => {
@@ -801,6 +824,16 @@ function AdminPage() {
                             >
                               📄 Slip
                             </button>
+                            {o.paymentMethod === "razorpay" && o.status !== "Cancelled" && (
+                              <button
+                                className="btn btn-outline btn-sm"
+                                style={{ color: "#DC2626", borderColor: "#FCA5A5", background: "#FEF2F2" }}
+                                onClick={() => handleRefundRazorpayOrder(o.orderNumber, o.total)}
+                                title="Issue official Razorpay refund"
+                              >
+                                💸 Refund
+                              </button>
+                            )}
                             {o.status === "Cancelled" ? (
                               <>
                                 <button

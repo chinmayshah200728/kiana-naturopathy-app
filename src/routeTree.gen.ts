@@ -22,6 +22,9 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ConditionsIndexRouteImport } from './routes/conditions.index'
 import { Route as ConditionsSlugRouteImport } from './routes/conditions.$slug'
+import { Route as PaymentFailedRouteImport } from './routes/payment.failed'
+import { Route as PaymentPendingRouteImport } from './routes/payment.pending'
+import { Route as PaymentSuccessRouteImport } from './routes/payment.success'
 import { Route as ShopIndexRouteImport } from './routes/shop.index'
 import { Route as ShopSlugRouteImport } from './routes/shop.$slug'
 
@@ -90,6 +93,21 @@ const ConditionsSlugRoute = ConditionsSlugRouteImport.update({
   path: '/conditions/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PaymentFailedRoute = PaymentFailedRouteImport.update({
+  id: '/payment/failed',
+  path: '/payment/failed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentPendingRoute = PaymentPendingRouteImport.update({
+  id: '/payment/pending',
+  path: '/payment/pending',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
+  id: '/payment/success',
+  path: '/payment/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopIndexRoute = ShopIndexRouteImport.update({
   id: '/shop/',
   path: '/shop/',
@@ -113,6 +131,9 @@ export interface FileRoutesByFullPath {
   '/wishlist': typeof WishlistRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/conditions/$slug': typeof ConditionsSlugRoute
+  '/payment/failed': typeof PaymentFailedRoute
+  '/payment/pending': typeof PaymentPendingRoute
+  '/payment/success': typeof PaymentSuccessRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/conditions/': typeof ConditionsIndexRoute
@@ -130,6 +151,9 @@ export interface FileRoutesByTo {
   '/wishlist': typeof WishlistRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/conditions/$slug': typeof ConditionsSlugRoute
+  '/payment/failed': typeof PaymentFailedRoute
+  '/payment/pending': typeof PaymentPendingRoute
+  '/payment/success': typeof PaymentSuccessRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/blog': typeof BlogIndexRoute
   '/conditions': typeof ConditionsIndexRoute
@@ -148,6 +172,9 @@ export interface FileRoutesById {
   '/wishlist': typeof WishlistRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/conditions/$slug': typeof ConditionsSlugRoute
+  '/payment/failed': typeof PaymentFailedRoute
+  '/payment/pending': typeof PaymentPendingRoute
+  '/payment/success': typeof PaymentSuccessRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/conditions/': typeof ConditionsIndexRoute
@@ -167,6 +194,9 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/blog/$slug'
     | '/conditions/$slug'
+    | '/payment/failed'
+    | '/payment/pending'
+    | '/payment/success'
     | '/shop/$slug'
     | '/blog/'
     | '/conditions/'
@@ -184,6 +214,9 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/blog/$slug'
     | '/conditions/$slug'
+    | '/payment/failed'
+    | '/payment/pending'
+    | '/payment/success'
     | '/shop/$slug'
     | '/blog'
     | '/conditions'
@@ -201,6 +234,9 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/blog/$slug'
     | '/conditions/$slug'
+    | '/payment/failed'
+    | '/payment/pending'
+    | '/payment/success'
     | '/shop/$slug'
     | '/blog/'
     | '/conditions/'
@@ -219,6 +255,9 @@ export interface RootRouteChildren {
   WishlistRoute: typeof WishlistRoute
   BlogSlugRoute: typeof BlogSlugRoute
   ConditionsSlugRoute: typeof ConditionsSlugRoute
+  PaymentFailedRoute: typeof PaymentFailedRoute
+  PaymentPendingRoute: typeof PaymentPendingRoute
+  PaymentSuccessRoute: typeof PaymentSuccessRoute
   ShopSlugRoute: typeof ShopSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ConditionsIndexRoute: typeof ConditionsIndexRoute
@@ -318,6 +357,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConditionsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/payment/failed': {
+      id: '/payment/failed'
+      path: '/payment/failed'
+      fullPath: '/payment/failed'
+      preLoaderRoute: typeof PaymentFailedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment/pending': {
+      id: '/payment/pending'
+      path: '/payment/pending'
+      fullPath: '/payment/pending'
+      preLoaderRoute: typeof PaymentPendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment/success': {
+      id: '/payment/success'
+      path: '/payment/success'
+      fullPath: '/payment/success'
+      preLoaderRoute: typeof PaymentSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop/': {
       id: '/shop/'
       path: '/shop'
@@ -347,6 +407,9 @@ const rootRouteChildren: RootRouteChildren = {
   WishlistRoute: WishlistRoute,
   BlogSlugRoute: BlogSlugRoute,
   ConditionsSlugRoute: ConditionsSlugRoute,
+  PaymentFailedRoute: PaymentFailedRoute,
+  PaymentPendingRoute: PaymentPendingRoute,
+  PaymentSuccessRoute: PaymentSuccessRoute,
   ShopSlugRoute: ShopSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   ConditionsIndexRoute: ConditionsIndexRoute,
