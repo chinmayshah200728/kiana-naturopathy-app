@@ -73,31 +73,8 @@ export const createPaymentOrder = createServerFn({ method: "POST" })
     const orderNumber = `KN-${Date.now().toString(36).toUpperCase()}`;
     const createdAt = new Date().toISOString();
 
-    let razorpayOrderId: string | null = null;
-    let initialPaymentStatus: PaymentStatus = "PAYMENT_PENDING";
-
-    if (data.paymentMethod === "razorpay") {
-      try {
-        const razorpayOrder = await createRazorpayServerOrder({
-          amountInPaise,
-          currency: "INR",
-          orderNumber,
-          notes: {
-            customer_name: data.name,
-            customer_phone: data.phone,
-            customer_email: data.email || "",
-          },
-        });
-        razorpayOrderId = razorpayOrder.id;
-      } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.error("Razorpay order initialization error:", msg);
-        throw new Error("Unable to initialize secure payment gateway. Please try again or choose COD.");
-      }
-    } else {
-      // COD Order
-      initialPaymentStatus = "PAYMENT_PENDING";
-    }
+    const razorpayOrderId: string | null = null;
+    const initialPaymentStatus: PaymentStatus = "PAYMENT_PENDING";
 
     const newOrderRecord: PaymentOrderRecord = {
       id: `ord_${Date.now()}`,
@@ -171,8 +148,6 @@ export const createPaymentOrder = createServerFn({ method: "POST" })
       amountInPaise,
       currency: "INR",
       paymentMethod: data.paymentMethod,
-      razorpayOrderId,
-      keyId: getPublicRazorpayKeyId(),
       customerName: data.name,
       customerEmail: data.email || "",
       customerPhone: data.phone,

@@ -5,8 +5,7 @@ import { useState } from "react";
 import { PageHead } from "@/components/site/SiteLayout";
 import { formatINR, useCart } from "@/lib/cart";
 import { useECommerce } from "@/lib/ecommerce-context";
-import { createPaymentOrder, verifyPayment } from "@/lib/payment.functions";
-import { loadRazorpayScript } from "@/lib/razorpay-sdk";
+import { createPaymentOrder } from "@/lib/payment.functions";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -42,7 +41,6 @@ function CartPage() {
   } = useECommerce();
 
   const initPaymentOrderServer = useServerFn(createPaymentOrder);
-  const verifyPaymentServer = useServerFn(verifyPayment);
 
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "upi">("cod");
   const [upiRef, setUpiRef] = useState("");

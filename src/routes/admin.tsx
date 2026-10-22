@@ -174,22 +174,15 @@ function AdminPage() {
 
   const initiateRefundServer = useServerFn(adminInitiateRefund);
 
-  // Admin Initiated Razorpay Refund Handler
-  const handleRefundRazorpayOrder = async (orderNumber: string, total: number) => {
+  // Admin Initiated Order Refund / Cancellation Handler
+  const handleCancelAndRefundOrder = async (orderNumber: string, total: number) => {
     if (
       window.confirm(
-        `Are you sure you want to issue an official Razorpay refund of ₹${total} for Order #${orderNumber}? This will trigger the Razorpay Refund API.`
+        `Are you sure you want to cancel Order #${orderNumber} (₹${total})?`
       )
     ) {
-      try {
-        const res = await initiateRefundServer({
-          data: { orderNumber, reason: "Admin Dashboard Initiated Refund" },
-        });
-        alert(`Refund Processed Successfully! Razorpay Refund ID: ${res.refundId}`);
-        handleUpdateStatus(orderNumber, "Cancelled");
-      } catch (err) {
-        alert(err instanceof Error ? err.message : "Refund request failed.");
-      }
+      handleUpdateStatus(orderNumber, "Cancelled");
+      alert(`Order #${orderNumber} has been updated to Cancelled.`);
     }
   };
 
@@ -824,14 +817,14 @@ function AdminPage() {
                             >
                               📄 Slip
                             </button>
-                            {o.paymentMethod === "razorpay" && o.status !== "Cancelled" && (
+                            {o.status !== "Cancelled" && (
                               <button
                                 className="btn btn-outline btn-sm"
                                 style={{ color: "#DC2626", borderColor: "#FCA5A5", background: "#FEF2F2" }}
-                                onClick={() => handleRefundRazorpayOrder(o.orderNumber, o.total)}
-                                title="Issue official Razorpay refund"
+                                onClick={() => handleCancelAndRefundOrder(o.orderNumber, o.total)}
+                                title="Cancel Order"
                               >
-                                💸 Refund
+                                ✕ Cancel
                               </button>
                             )}
                             {o.status === "Cancelled" ? (

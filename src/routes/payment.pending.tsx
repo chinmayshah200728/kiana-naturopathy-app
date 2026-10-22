@@ -74,7 +74,7 @@ function PaymentPendingPage() {
 
             <h2>Payment Under Bank Verification</h2>
             <p className="lead" style={{ fontSize: "1rem", margin: "10px 0 20px" }}>
-              Your bank or payment app is processing your transaction. We are automatically checking status with Razorpay servers every few seconds.
+              Your payment is being confirmed. We are automatically checking your order status every few seconds.
             </p>
 
             {order && (

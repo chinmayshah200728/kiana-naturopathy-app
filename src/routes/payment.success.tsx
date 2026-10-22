@@ -158,7 +158,7 @@ function PaymentSuccessPage() {
                   ? `Order Reference: #${order.orderNumber} — Please keep ${formatINR(order.totalInr)} ready in cash or UPI QR upon package arrival.`
                   : isUpi
                   ? `Order Reference: #${order.orderNumber} — Your order has been recorded and will be packed shortly.`
-                  : `Order Reference: #${order.orderNumber} | Payment ID: ${order.razorpayPaymentId || "Verified"}`}
+                  : `Order Reference: #${order.orderNumber} | Status: Confirmed`}
               </p>
             </div>
 

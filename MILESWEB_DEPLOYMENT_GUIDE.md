@@ -43,23 +43,19 @@ Most MilesWeb hosting plans come with **cPanel** and the CloudLinux **Setup Node
 
 ---
 
-### Step 3: Configure Environment Variables
+### Step 3: Configure Environment Variables (Optional)
 1. Go back to **cPanel** ➔ **Setup Node.js App** ➔ Click the **Edit (Pencil)** icon next to your app.
 2. Scroll down to the **Environment variables** section and click **Add Variable**:
    - `NODE_ENV` = `production`
-   - `RAZORPAY_KEY_ID` = `rzp_live_yourKeyHere` (or `rzp_test_...` for test mode)
-   - `RAZORPAY_KEY_SECRET` = `yourSecretKeyHere`
-   - `RAZORPAY_WEBHOOK_SECRET` = `yourWebhookSecret`
-   - `VITE_RAZORPAY_KEY_ID` = `rzp_live_yourKeyHere`
-   - `APP_BASE_URL` = `https://yourdomain.com`
+   - `APP_BASE_URL` = `https://kiananaturopathy.com`
 3. Click **Save** at the top right.
 
 ---
 
 ### Step 4: Start the Application & Verify
 1. Click **Run NPM Install** if prompted, or click **Start App** / **Restart**.
-2. Open your website in a browser: `https://yourdomain.com`.
-3. Test the homepage, shop, doctor consultation booking, AI remedy assistant, and cart checkout!
+2. Open your website in a browser: `https://kiananaturopathy.com`.
+3. Test the homepage, shop, doctor consultation booking, AI remedy assistant, and cart checkout (Cash on Delivery & Instant UPI QR work out of the box)!
 
 ---
 
@@ -93,7 +89,7 @@ unzip kiana-milesweb-deploy.zip
 ```bash
 cp .env.example .env
 nano .env
-# Fill in your Razorpay live/test keys and production URL
+# Set APP_BASE_URL to your live domain
 ```
 
 ### Step 4: Start with PM2
@@ -107,7 +103,7 @@ pm2 startup
 Edit your Nginx site configuration:
 ```nginx
 server {
-    server_name yourdomain.com www.yourdomain.com;
+    server_name kiananaturopathy.com www.kiananaturopathy.com;
 
     location / {
         proxy_pass http://localhost:3000;
@@ -123,13 +119,12 @@ Reload Nginx and install free SSL certificate:
 ```bash
 sudo nginx -t && sudo systemctl reload nginx
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
+sudo certbot --nginx -d kiananaturopathy.com -d www.kiananaturopathy.com
 ```
 
 ---
 
 ## 🔒 Post-Deployment Checklist
-- [ ] Test **Razorpay Payment Gateway** in Live/Sandbox mode.
-- [ ] Add your live webhook URL in Razorpay Dashboard: `https://yourdomain.com/api/payments/webhook`.
+- [ ] Test **Cash on Delivery** and **Instant UPI QR** checkout.
 - [ ] Verify **SSL (HTTPS)** is active and padlock is green in browser address bar.
-- [ ] Access the Admin Dashboard at `https://yourdomain.com/admin` (Default password: `kiana2026`).
+- [ ] Access the Admin Dashboard at `https://kiananaturopathy.com/admin` (Default password: `kiana2026`).
