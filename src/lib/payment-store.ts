@@ -19,7 +19,7 @@ export interface PaymentOrderRecord {
   pincode: string;
   preferredItems?: string | null;
   notes?: string | null;
-  paymentMethod: "razorpay" | "cod";
+  paymentMethod: "razorpay" | "cod" | "upi";
   paymentStatus: PaymentStatus;
   orderStatus: "new" | "packed" | "shipped" | "delivered" | "cancelled";
   subtotalInr: number;

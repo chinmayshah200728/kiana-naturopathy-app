@@ -15,10 +15,10 @@ export const Route = createFileRoute("/cart")({
       {
         name: "description",
         content:
-          "Review your wellness order, checkout securely via Razorpay UPI, Cards, NetBanking or Cash on Delivery. Free express shipping on orders over ₹999.",
+          "Review your wellness order, checkout securely via Cash on Delivery or Instant UPI. Free express shipping on orders over ₹999.",
       },
       { property: "og:title", content: "Your Cart & Checkout — Kiana Naturopathy" },
-      { property: "og:description", content: "Secure Razorpay Online Payment & Cash on Delivery." },
+      { property: "og:description", content: "Secure Cash on Delivery & UPI Checkout." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -44,7 +44,8 @@ function CartPage() {
   const initPaymentOrderServer = useServerFn(createPaymentOrder);
   const verifyPaymentServer = useServerFn(verifyPayment);
 
-  const [paymentMethod, setPaymentMethod] = useState<"razorpay" | "cod">("razorpay");
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "upi">("cod");
+  const [upiRef, setUpiRef] = useState("");
 
   // Customer Auth Sign-In States
   const [authName, setAuthName] = useState("");
@@ -120,7 +121,13 @@ function CartPage() {
           address,
           city,
           pincode,
-          notes,
+          notes: notes
+            ? paymentMethod === "upi" && upiRef.trim()
+              ? `${notes} (UPI Ref: ${upiRef.trim()})`
+              : notes
+            : paymentMethod === "upi" && upiRef.trim()
+            ? `UPI Ref: ${upiRef.trim()}`
+            : "",
           paymentMethod,
           items: lines.map((l) => ({ slug: l.slug, qty: l.qty })),
         },
@@ -129,115 +136,25 @@ function CartPage() {
       // Update customer profile with delivery details
       loginCustomer({ name, email, phone, address: `${address}, ${city} ${pincode}`, city, pincode });
 
-      if (paymentMethod === "cod") {
-        // COD Direct Confirmation
-        addOrderToHistory({
-          id: "ord_" + Date.now(),
-          orderNumber: orderRes.orderNumber,
-          date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-          items: lines.map((l) => ({ slug: l.slug, name: l.name, price: l.price, qty: l.qty, image: l.image })),
-          subtotal,
-          discount: discountAmount,
-          shipping: finalShipping,
-          total: finalTotal,
-          status: "Order Placed",
-          paymentMethod: "cod",
-          address: `${address}, ${city} ${pincode}`,
-          customerName: name,
-          phone,
-        });
+      // Direct Order Confirmation (Cash on Delivery or Instant UPI)
+      addOrderToHistory({
+        id: "ord_" + Date.now(),
+        orderNumber: orderRes.orderNumber,
+        date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+        items: lines.map((l) => ({ slug: l.slug, name: l.name, price: l.price, qty: l.qty, image: l.image })),
+        subtotal,
+        discount: discountAmount,
+        shipping: finalShipping,
+        total: finalTotal,
+        status: paymentMethod === "cod" ? "Order Placed (COD)" : "Order Placed (UPI Confirmed)",
+        paymentMethod,
+        address: `${address}, ${city} ${pincode}`,
+        customerName: name,
+        phone,
+      });
 
-        clear();
-        navigate({ to: "/payment/success", search: { orderId: orderRes.orderNumber } });
-        return;
-      }
-
-      // 2. Razorpay Online Payment Integration
-      const isScriptLoaded = await loadRazorpayScript();
-      if (!isScriptLoaded) {
-        throw new Error("Could not load Razorpay Payment Gateway. Please check internet connection.");
-      }
-
-      if (!orderRes.razorpayOrderId) {
-        throw new Error("Razorpay Order ID creation failed on server.");
-      }
-
-      const options = {
-        key: orderRes.keyId,
-        amount: orderRes.amountInPaise,
-        currency: orderRes.currency,
-        name: "Kiana Naturopathy & Wellness",
-        description: `Order #${orderRes.orderNumber} - Practitioner Herbal Care`,
-        image: "/assets/img/hero-naturopathy.jpg",
-        order_id: orderRes.razorpayOrderId,
-        prefill: {
-          name: orderRes.customerName,
-          email: orderRes.customerEmail || "",
-          contact: orderRes.customerPhone,
-        },
-        notes: {
-          order_number: orderRes.orderNumber,
-        },
-        theme: {
-          color: "#064E3B",
-        },
-        modal: {
-          ondismiss: () => {
-            setBusy(false);
-            setError("Payment was cancelled. You can retry safely whenever you're ready.");
-          },
-        },
-        handler: async (response: {
-          razorpay_payment_id: string;
-          razorpay_order_id: string;
-          razorpay_signature: string;
-        }) => {
-          try {
-            setBusy(true);
-            // 3. Server-side HMAC Signature & API Verification
-            const verifyRes = await verifyPaymentServer({
-              data: {
-                orderNumber: orderRes.orderNumber,
-                razorpayOrderId: response.razorpay_order_id,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpaySignature: response.razorpay_signature,
-              },
-            });
-
-            if (verifyRes.success) {
-              addOrderToHistory({
-                id: "ord_" + Date.now(),
-                orderNumber: orderRes.orderNumber,
-                date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-                items: lines.map((l) => ({ slug: l.slug, name: l.name, price: l.price, qty: l.qty, image: l.image })),
-                subtotal,
-                discount: discountAmount,
-                shipping: finalShipping,
-                total: finalTotal,
-                status: "Order Placed",
-                paymentMethod: "razorpay",
-                address: `${address}, ${city} ${pincode}`,
-                customerName: name,
-                phone,
-              });
-
-              clear();
-              navigate({ to: "/payment/success", search: { orderId: orderRes.orderNumber } });
-            }
-          } catch (vErr) {
-            setBusy(false);
-            const vMsg = vErr instanceof Error ? vErr.message : "Payment verification failed.";
-            setError(vMsg);
-            navigate({
-              to: "/payment/failed",
-              search: { orderId: orderRes.orderNumber, reason: vMsg },
-            });
-          }
-        },
-      };
-
-      const razorpayWindow = new window.Razorpay(options);
-      razorpayWindow.open();
+      clear();
+      navigate({ to: "/payment/success", search: { orderId: orderRes.orderNumber } });
     } catch (err) {
       setBusy(false);
       setError(err instanceof Error ? err.message : "Order checkout failed. Please try again.");
@@ -494,16 +411,6 @@ function CartPage() {
                         <div className="payment-method-tabs" style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                           <button
                             type="button"
-                            className={`payment-tab ${paymentMethod === "razorpay" ? "active" : ""}`}
-                            onClick={() => setPaymentMethod("razorpay")}
-                            style={{ padding: "14px 16px", borderRadius: 12, textAlign: "left" }}
-                          >
-                            <strong style={{ display: "block", fontSize: "1rem" }}>💳 Razorpay Online</strong>
-                            <span style={{ fontSize: ".82rem", opacity: 0.85 }}>UPI (GPay, PhonePe, Paytm), Cards, NetBanking, Wallets</span>
-                          </button>
-
-                          <button
-                            type="button"
                             className={`payment-tab ${paymentMethod === "cod" ? "active" : ""}`}
                             onClick={() => setPaymentMethod("cod")}
                             style={{ padding: "14px 16px", borderRadius: 12, textAlign: "left" }}
@@ -511,28 +418,70 @@ function CartPage() {
                             <strong style={{ display: "block", fontSize: "1rem" }}>💵 Cash on Delivery</strong>
                             <span style={{ fontSize: ".82rem", opacity: 0.85 }}>Pay cash or UPI upon package arrival</span>
                           </button>
+
+                          <button
+                            type="button"
+                            className={`payment-tab ${paymentMethod === "upi" ? "active" : ""}`}
+                            onClick={() => setPaymentMethod("upi")}
+                            style={{ padding: "14px 16px", borderRadius: 12, textAlign: "left" }}
+                          >
+                            <strong style={{ display: "block", fontSize: "1rem" }}>📲 Instant UPI QR</strong>
+                            <span style={{ fontSize: ".82rem", opacity: 0.85 }}>Scan &amp; pay via GPay, PhonePe, Paytm</span>
+                          </button>
                         </div>
 
-                        {/* Razorpay Gateway Info Box */}
-                        {paymentMethod === "razorpay" && (
-                          <div className="payment-details-box card" style={{ marginTop: 14, background: "#ECFDF5", border: "1px solid #10B981" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                              <span style={{ fontSize: "1.4rem" }}>🔒</span>
-                              <h4 style={{ margin: 0, color: "#065F46" }}>256-Bit SSL Encrypted Razorpay Gateway</h4>
+                        {/* COD Box */}
+                        {paymentMethod === "cod" && (
+                          <div className="payment-details-box card" style={{ marginTop: 14, background: "#F0FDF4", border: "1px solid #86EFAC" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                              <span style={{ fontSize: "1.4rem" }}>📦</span>
+                              <h4 style={{ margin: 0, color: "#166534" }}>Cash on Delivery (COD) Selected</h4>
                             </div>
-                            <p className="muted" style={{ fontSize: ".88rem", margin: 0, color: "#047857" }}>
-                              Supports all Indian UPI apps (GPay, PhonePe, Paytm, BHIM), Credit Cards, Debit Cards, Net Banking &amp; Digital Wallets. No extra payment fees!
+                            <p className="muted" style={{ fontSize: ".88rem", margin: 0, color: "#15803D" }}>
+                              No advance online payment required! You can pay cash or scan the courier partner's UPI QR code when your parcel is delivered to your doorstep.
                             </p>
                           </div>
                         )}
 
-                        {/* COD Box */}
-                        {paymentMethod === "cod" && (
-                          <div className="payment-details-box card" style={{ marginTop: 14 }}>
-                            <h4>Cash on Delivery (COD)</h4>
-                            <p className="muted" style={{ fontSize: ".88rem", margin: 0 }}>
-                              Pay with cash or UPI QR directly to the delivery partner when your parcel reaches your doorstep.
-                            </p>
+                        {/* UPI Box */}
+                        {paymentMethod === "upi" && (
+                          <div className="payment-details-box card" style={{ marginTop: 14, background: "#F8FAFC", border: "1px solid #CBD5E1" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                              <span style={{ fontSize: "1.4rem" }}>📲</span>
+                              <div>
+                                <h4 style={{ margin: 0, color: "#0F172A" }}>Scan &amp; Pay via Direct UPI</h4>
+                                <span style={{ fontSize: ".82rem", color: "#64748B" }}>GPay, PhonePe, Paytm, BHIM, Cred or any bank app</span>
+                              </div>
+                            </div>
+
+                            <div style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap", padding: 14, background: "#FFFFFF", borderRadius: 10, border: "1px solid #E2E8F0" }}>
+                              <img
+                                src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(`upi://pay?pa=kiananaturopathy@upi&pn=Kiana%20Naturopathy&am=${finalTotal}&cu=INR`)}`}
+                                alt="UPI QR Code"
+                                width={120}
+                                height={120}
+                                style={{ borderRadius: 8, border: "1px solid #E2E8F0" }}
+                              />
+                              <div style={{ flex: 1, minWidth: 200 }}>
+                                <div style={{ fontSize: ".88rem", marginBottom: 4 }}>
+                                  <strong>UPI ID:</strong> <code style={{ background: "#EEF2F6", padding: "2px 6px", borderRadius: 4, fontWeight: 700, color: "#0F172A" }}>kiananaturopathy@upi</code>
+                                </div>
+                                <div style={{ fontSize: ".88rem", marginBottom: 8 }}>
+                                  <strong>Payable Amount:</strong> <span style={{ color: "#065F46", fontWeight: 700, fontSize: "1.05rem" }}>{formatINR(finalTotal)}</span>
+                                </div>
+                                <label htmlFor="upi-ref-input" style={{ fontSize: ".8rem", fontWeight: 600, display: "block", marginBottom: 4 }}>
+                                  UPI Transaction / UTR Ref Number (Optional):
+                                </label>
+                                <input
+                                  id="upi-ref-input"
+                                  type="text"
+                                  value={upiRef}
+                                  onChange={(e) => setUpiRef(e.target.value)}
+                                  placeholder="e.g. 429381029384"
+                                  style={{ width: "100%", padding: "7px 10px", fontSize: ".85rem", borderRadius: 6, border: "1px solid #CBD5E1" }}
+                                />
+                              </div>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -550,10 +499,10 @@ function CartPage() {
                         style={{ marginTop: 20 }}
                       >
                         {busy
-                          ? "Initializing Secure Payment..."
-                          : paymentMethod === "razorpay"
-                          ? `Pay ${formatINR(finalTotal)} with Razorpay 💳`
-                          : `Confirm COD Order (${formatINR(finalTotal)}) →`}
+                          ? "Placing Your Order..."
+                          : paymentMethod === "cod"
+                          ? `Confirm Order with Cash on Delivery (${formatINR(finalTotal)}) →`
+                          : `Confirm UPI Order (${formatINR(finalTotal)}) →`}
                       </button>
                     </form>
                   </div>
@@ -638,7 +587,7 @@ function CartPage() {
                     </div>
 
                     <div className="trust-checkout-badges" style={{ marginTop: 20 }}>
-                      <div>🛡️ 100% Secure Razorpay Payment</div>
+                      <div>🛡️ 100% Safe &amp; Secure Checkout</div>
                       <div>⚡ 3–6 Working Days Delivery</div>
                       <div>🌿 Ayush &amp; GMP Standard Verified</div>
                     </div>

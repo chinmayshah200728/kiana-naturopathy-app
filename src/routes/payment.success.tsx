@@ -47,16 +47,16 @@ function PaymentSuccessPage() {
   if (loading) {
     return (
       <>
-        <PageHead eyebrow="Verifying Payment" title="Confirming Your Transaction..." />
+        <PageHead eyebrow="Processing Order" title="Confirming Your Order..." />
         <section style={{ padding: "60px 0 100px", textAlign: "center" }}>
           <div className="wrap">
             <div className="card" style={{ maxWidth: 540, margin: "0 auto", padding: 40 }}>
               <div className="spinner" style={{ fontSize: "2.5rem", marginBottom: 16 }}>
                 ⏳
               </div>
-              <h3>Communicating with Razorpay Server...</h3>
+              <h3>Confirming Order Details...</h3>
               <p className="muted">
-                Please wait while we verify your cryptographic payment signature and order status. Do not close this browser window.
+                Please wait while we record your order and delivery information.
               </p>
             </div>
           </div>
@@ -92,11 +92,16 @@ function PaymentSuccessPage() {
     );
   }
 
+  const isCod = order.paymentMethod === "cod";
+  const isUpi = order.paymentMethod === "upi";
   const isVerifiedPaid = order.paymentStatus === "PAID";
 
   return (
     <>
-      <PageHead eyebrow="Payment Verified 🎉" title={`Thank You, ${order.customerName}!`} />
+      <PageHead
+        eyebrow={isCod ? "Order Received 📦" : isUpi ? "UPI Order Placed 📲" : "Payment Verified 🎉"}
+        title={`Thank You, ${order.customerName}!`}
+      />
 
       <section style={{ padding: "40px 0 80px" }}>
         <div className="wrap" style={{ maxWidth: 720 }}>
@@ -120,14 +125,18 @@ function PaymentSuccessPage() {
 
             <h2>Order #{order.orderNumber} Confirmed</h2>
             <p className="lead" style={{ fontSize: "1rem", margin: "10px 0 20px" }}>
-              Your server-verified payment of <strong>{formatINR(order.totalInr)}</strong> was completed successfully!
+              {isCod
+                ? `Your Cash on Delivery order for ${formatINR(order.totalInr)} has been placed and is being prepared for dispatch.`
+                : isUpi
+                ? `Your UPI order for ${formatINR(order.totalInr)} has been received and recorded!`
+                : `Your verified payment of ${formatINR(order.totalInr)} was completed successfully!`}
             </p>
 
             {/* Authoritative Server Verification Badge */}
             <div
               style={{
-                background: isVerifiedPaid ? "#ECFDF5" : "#FFFBEB",
-                border: `1px solid ${isVerifiedPaid ? "#10B981" : "#F59E0B"}`,
+                background: "#ECFDF5",
+                border: "1px solid #10B981",
                 borderRadius: 12,
                 padding: "16px 20px",
                 margin: "20px 0",
@@ -135,17 +144,21 @@ function PaymentSuccessPage() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <span style={{ fontSize: "1.2rem" }}>{isVerifiedPaid ? "🛡️" : "⏳"}</span>
-                <strong style={{ fontSize: "1rem", color: isVerifiedPaid ? "#065F46" : "#92400E" }}>
-                  {isVerifiedPaid
-                    ? "Payment Server-Verified via Razorpay API"
-                    : `Current Payment Status: ${order.paymentStatus}`}
+                <span style={{ fontSize: "1.2rem" }}>{isCod ? "📦" : isUpi ? "📲" : "🛡️"}</span>
+                <strong style={{ fontSize: "1rem", color: "#065F46" }}>
+                  {isCod
+                    ? "Cash on Delivery (Pay at Doorstep)"
+                    : isUpi
+                    ? "Direct UPI Payment Recorded"
+                    : "Payment Verified"}
                 </strong>
               </div>
-              <p style={{ margin: 0, fontSize: ".86rem", color: isVerifiedPaid ? "#047857" : "#B45309" }}>
-                {isVerifiedPaid
-                  ? `Razorpay Payment ID: ${order.razorpayPaymentId || "Verified"} | Order Reference: ${order.razorpayOrderId || order.orderNumber}`
-                  : "Your transaction is being processed. Status updates will reflect automatically in your account."}
+              <p style={{ margin: 0, fontSize: ".86rem", color: "#047857" }}>
+                {isCod
+                  ? `Order Reference: #${order.orderNumber} — Please keep ${formatINR(order.totalInr)} ready in cash or UPI QR upon package arrival.`
+                  : isUpi
+                  ? `Order Reference: #${order.orderNumber} — Your order has been recorded and will be packed shortly.`
+                  : `Order Reference: #${order.orderNumber} | Payment ID: ${order.razorpayPaymentId || "Verified"}`}
               </p>
             </div>
 

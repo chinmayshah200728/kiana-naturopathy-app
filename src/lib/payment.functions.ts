@@ -32,7 +32,7 @@ const createPaymentOrderSchema = z.object({
   city: z.string().trim().min(2).max(80),
   pincode: z.string().trim().min(4).max(12),
   notes: z.string().trim().max(600).optional().or(z.literal("")),
-  paymentMethod: z.enum(["razorpay", "cod"]),
+  paymentMethod: z.enum(["razorpay", "cod", "upi"]),
   items: z
     .array(
       z.object({
