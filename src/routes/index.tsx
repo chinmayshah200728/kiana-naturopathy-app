@@ -196,7 +196,7 @@ function HomePage() {
               }}>
                 <img
                   src="/assets/img/dr-kiana-profile.jpg"
-                  alt="Dr. Kiana Sharma - Founder & Chief Naturopath"
+                  alt="Dr. Hiral Shah - Founder & Chief Naturopath"
                   style={{ width: "100%", height: "460px", objectFit: "cover", objectPosition: "top" }}
                 />
                 <div style={{
@@ -208,7 +208,7 @@ function HomePage() {
                   padding: "24px 20px 20px",
                   color: "#fff"
                 }}>
-                  <h3 style={{ color: "#FEEFDD", margin: 0, fontSize: "1.35rem" }}>Dr. Kiana Sharma</h3>
+                  <h3 style={{ color: "#FEEFDD", margin: 0, fontSize: "1.35rem" }}>Dr. Hiral Shah</h3>
                   <span style={{ fontSize: ".88rem", opacity: 0.9, fontWeight: 600 }}>BNYS, MD (Naturopathy &amp; Clinical Nutrition)</span>
                 </div>
               </div>
@@ -230,12 +230,12 @@ function HomePage() {
 
             <div>
               <div className="eyebrow">Meet Our Founder &amp; Chief Practitioner</div>
-              <h2 style={{ fontSize: "2.3rem", color: "var(--emerald-950)" }}>Dr. Kiana Sharma</h2>
+              <h2 style={{ fontSize: "2.3rem", color: "var(--emerald-950)" }}>Dr. Hiral Shah</h2>
               <p style={{ fontWeight: 700, color: "var(--emerald-800)", fontSize: "1.05rem" }}>
                 Founder &amp; Lead Naturopathic Doctor
               </p>
               <p className="lead" style={{ fontSize: "1rem", marginTop: 12 }}>
-                With over 18 years of dedicated clinical practice in naturopathy, plant medicine, and functional nutrition, Dr. Kiana has personally guided 12,000+ patients to sustainable, drug-free wellness.
+                With over 18 years of dedicated clinical practice in naturopathy, plant medicine, and functional nutrition, Dr. Hiral has personally guided 12,000+ patients to sustainable, drug-free wellness.
               </p>
               <p style={{ color: "var(--ink-700)", lineHeight: 1.7 }}>
                 She founded Kiana Naturopathy &amp; Wellness Centre to blend traditional Indian clinical nutrition, therapeutic yoga, hydrotherapy, and practitioner-formulated herbal remedies into accessible daily routines.
@@ -257,7 +257,7 @@ function HomePage() {
 
               <div style={{ display: "flex", gap: 14, marginTop: 24, flexWrap: "wrap" }}>
                 <Link className="btn btn-gold" to="/about">
-                  Read Dr. Kiana's Profile &amp; Story →
+                  Read Dr. Hiral's Profile &amp; Story →
                 </Link>
                 <Link className="btn btn-primary" to="/naturopathy">
                   Explore Naturopathy Care

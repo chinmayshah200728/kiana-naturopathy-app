@@ -29,7 +29,7 @@ const VALUES = [
 ];
 
 const TEAM = [
-  { name: "Dr. Kiana Sharma, BNYS, MD", role: "Founder & Chief Naturopath", text: "18+ years in clinical naturopathy, clinical nutrition, and functional plant remedies.", image: "/assets/img/dr-kiana-profile.jpg" },
+  { name: "Dr. Hiral Shah, BNYS, MD", role: "Founder & Chief Naturopath", text: "18+ years in clinical naturopathy, clinical nutrition, and functional plant remedies.", image: "/assets/img/dr-kiana-profile.jpg" },
   { name: "Dr. Aditya Rane, BNYS", role: "Therapies & Detox Lead", text: "14+ years designing residential detox programmes and supervising fasting protocols." },
   { name: "Kavita Pillai, MSc Dietetics", role: "Clinical Dietitian", text: "Builds regional Indian meal plans for diabetes, PCOS and weight management." },
   { name: "Rohan Kadam", role: "Yoga & Movement", text: "Therapeutic yoga for spine, joint and stress-related concerns." },
@@ -61,7 +61,7 @@ function AboutPage() {
               }}>
                 <img
                   src="/assets/img/dr-kiana-profile.jpg"
-                  alt="Dr. Kiana Sharma - Founder & Chief Naturopath"
+                  alt="Dr. Hiral Shah - Founder & Chief Naturopath"
                   style={{ width: "100%", height: 440, objectFit: "cover", objectPosition: "top" }}
                 />
               </div>
@@ -69,15 +69,15 @@ function AboutPage() {
 
             <div>
               <div className="eyebrow">Founder &amp; Chief Practitioner</div>
-              <h2>Dr. Kiana Sharma</h2>
+              <h2>Dr. Hiral Shah</h2>
               <span className="tag" style={{ background: "var(--emerald-900)", color: "var(--gold-400)", fontSize: "0.9rem", padding: "6px 14px", borderRadius: 50, fontWeight: 700 }}>
                 BNYS, MD (Naturopathy &amp; Clinical Nutrition)
               </span>
               <p className="lead" style={{ marginTop: 16 }}>
-                Dr. Kiana Sharma founded Kiana Naturopathy &amp; Wellness Centre in 2008 to bring drug-free, root-cause healing into everyday Indian households.
+                Dr. Hiral Shah founded Kiana Naturopathy &amp; Wellness Centre in 2008 to bring drug-free, root-cause healing into everyday Indian households.
               </p>
               <p style={{ color: "var(--ink-700)", lineHeight: 1.7 }}>
-                Having completed her BNYS degree and MD in Clinical Nutrition with distinction, Dr. Kiana has spent 18+ years perfecting natural protocols for gut health, metabolic balance, hormonal harmony, and stress restoration.
+                Having completed her BNYS degree and MD in Clinical Nutrition with distinction, Dr. Hiral has spent 18+ years perfecting natural protocols for gut health, metabolic balance, hormonal harmony, and stress restoration.
               </p>
               <p style={{ color: "var(--ink-700)", lineHeight: 1.7 }}>
                 She personally formulates our practitioner-grade herbal teas, cold-pressed oils, and natural supplement blends, ensuring every remedy meets Ayush and GMP standards.
