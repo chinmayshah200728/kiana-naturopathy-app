@@ -24,6 +24,29 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "HealthAndBeautyBusiness",
+          "name": "Kiana Naturopathy & Wellness Centre",
+          "url": "https://www.kiananaturopathy.com",
+          "description": "Drug-free naturopathy care in Mumbai: personalised diet therapy, yoga, hydrotherapy and herbal support.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Mumbai",
+            "addressRegion": "Maharashtra",
+            "addressCountry": "IN"
+          },
+          "founder": {
+            "@type": "Person",
+            "name": "Dr. Hiral Shah",
+            "jobTitle": "Chief Naturopath"
+          }
+        }),
+      },
+    ],
   }),
   component: HomePage,
 });
