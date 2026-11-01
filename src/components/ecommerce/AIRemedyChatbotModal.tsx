@@ -31,7 +31,7 @@ export function AIRemedyChatbotModal({ isOpen, onClose }: Props) {
     {
       id: "welcome-1",
       sender: "ai",
-      text: `Hello! 👋 I am Dr. Kiana AI, your Naturopathy Remedy Assistant. I have analyzed our complete live catalog of ${productsList.length} natural remedies, detox kits, and herbal supplements.\n\nTell me about your health goals or symptoms (e.g. acidity, insomnia, acne, joint pain, or detox), and I will recommend the exact practitioner formulations for you!`,
+      text: `Hello! 👋 I am Dr. Hiral AI, your Naturopathy Remedy Assistant. I have analyzed our complete live catalog of ${productsList.length} natural remedies, detox kits, and herbal supplements.\n\nTell me about your health goals or symptoms (e.g. acidity, insomnia, acne, joint pain, or detox), and I will recommend the exact practitioner formulations for you!`,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     },
   ]);
@@ -155,7 +155,7 @@ export function AIRemedyChatbotModal({ isOpen, onClose }: Props) {
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <h2 style={{ margin: 0, fontSize: "1.25rem", color: "#ffffff", fontWeight: 700 }}>
-                  Dr. Kiana AI Assistant
+                  Dr. Hiral AI Assistant
                 </h2>
                 <span className="badge badge-gold" style={{ fontSize: ".72rem", padding: "2px 8px" }}>
                   Naturopathy Advisor
@@ -425,7 +425,7 @@ export function AIRemedyChatbotModal({ isOpen, onClose }: Props) {
                   fontStyle: "italic",
                 }}
               >
-                Dr. Kiana AI is analyzing product ingredients & remedies... 🌿
+                Dr. Hiral AI is analyzing product ingredients & remedies... 🌿
               </div>
             </div>
           )}
