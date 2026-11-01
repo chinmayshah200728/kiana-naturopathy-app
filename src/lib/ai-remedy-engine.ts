@@ -35,7 +35,7 @@ const CONDITION_PATTERNS: { topic: string; keywords: string[]; defaultCategory: 
   },
   {
     topic: "Detox & Internal Reset",
-    keywords: ["detox", "cleanse", "reset", "toxin", "liver", "kidney", "pune", "sachet"],
+    keywords: ["detox", "cleanse", "reset", "toxin", "liver", "kidney", "mumbai", "sachet"],
     defaultCategory: "Detox Kits",
   },
 ];

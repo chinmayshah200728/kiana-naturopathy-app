@@ -10,7 +10,7 @@ export const Route = createFileRoute("/testimonials")({
       {
         name: "description",
         content:
-          "Personal accounts from people who followed our naturopathy programmes in Pune — diet therapy, detox, yoga and PCOS support.",
+          "Personal accounts from people who followed our naturopathy programmes in Mumbai — diet therapy, detox, yoga and PCOS support.",
       },
       { property: "og:title", content: "Client Stories — Kiana Naturopathy" },
       { property: "og:description", content: "Experiences shared by people who followed our programmes." },

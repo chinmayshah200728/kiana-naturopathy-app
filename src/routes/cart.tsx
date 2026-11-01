@@ -387,11 +387,11 @@ function CartPage() {
                       <div className="row2">
                         <div className="field">
                           <label htmlFor="o-city">City *</label>
-                          <input id="o-city" name="city" required placeholder="Pune" />
+                          <input id="o-city" name="city" required placeholder="Mumbai" />
                         </div>
                         <div className="field">
                           <label htmlFor="o-pin">6-Digit PIN Code *</label>
-                          <input id="o-pin" name="pincode" required placeholder="411005" maxLength={6} />
+                          <input id="o-pin" name="pincode" required placeholder="400001" maxLength={6} />
                         </div>
                       </div>
 

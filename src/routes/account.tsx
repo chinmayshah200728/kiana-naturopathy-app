@@ -407,7 +407,7 @@ function AccountPage() {
                     <input
                       id="reg-address"
                       type="text"
-                      placeholder="Flat / House No, Street, Landmark, Pune..."
+                      placeholder="Flat / House No, Street, Landmark, Mumbai..."
                       value={regAddress}
                       onChange={(e) => setRegAddress(e.target.value)}
                     />

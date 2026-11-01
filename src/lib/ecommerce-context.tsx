@@ -23,7 +23,7 @@ export type BookingRecord = {
   service: string;
   date: string;
   timeSlot: string;
-  type: "In-Clinic Pune" | "Online Video Consultation";
+  type: "In-Clinic Mumbai" | "Online Video Consultation";
   patientName: string;
   phone: string;
 };

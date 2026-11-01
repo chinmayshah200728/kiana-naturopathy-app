@@ -52,7 +52,7 @@ export function WhatsAppOrderTrackerWidget() {
         total: 1349,
         status: "Out for Delivery",
         paymentMethod: "cod",
-        address: "Flat 402, Shivajinagar, Pune 411005",
+        address: "Bandra West, Mumbai 400050",
         customerName: "Valued Customer",
         phone: "+91 98765 43210",
       });

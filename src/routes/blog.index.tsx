@@ -10,7 +10,7 @@ export const Route = createFileRoute("/blog/")({
       {
         name: "description",
         content:
-          "Short, honest articles on food, movement, sleep, detox and natural remedies, written by our naturopathy practitioners in Pune.",
+          "Short, honest articles on food, movement, sleep, detox and natural remedies, written by our naturopathy practitioners in Mumbai.",
       },
       { property: "og:title", content: "Wellness Blog — Kiana Naturopathy" },
       {

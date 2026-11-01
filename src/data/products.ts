@@ -38,7 +38,7 @@ export const products: Product[] = [
     category: "Detox Kits",
     short: "A complete practitioner-guided week of herbal sachets, green superfoods, and daily routine plan.",
     description:
-      "Everything needed for a gentle 7-day digestive and energy reset. Designed by senior naturopaths in Pune, this kit combines morning wheatgrass-moringa greens powder, evening herbal sachets, and a step-by-step daily diet guide built around everyday Indian meals.",
+      "Everything needed for a gentle 7-day digestive and energy reset. Designed by senior naturopaths in Mumbai, this kit combines morning wheatgrass-moringa greens powder, evening herbal sachets, and a step-by-step daily diet guide built around everyday Indian meals.",
     benefits: [
       "Structured 7-day program to reset digestion and eating habits",
       "Supports natural hepatic and renal elimination pathways",

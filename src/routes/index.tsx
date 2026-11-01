@@ -10,16 +10,16 @@ import { categories, products } from "@/data/products";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Kiana Naturopathy & Wellness Centre — Heal Naturally in Pune" },
+      { title: "Kiana Naturopathy & Wellness Centre — Heal Naturally in Mumbai" },
       {
         name: "description",
         content:
-          "Drug-free naturopathy care in Pune: personalised diet therapy, yoga, hydrotherapy and a practitioner-selected wellness shop.",
+          "Drug-free naturopathy care in Mumbai: personalised diet therapy, yoga, hydrotherapy and a practitioner-selected wellness shop.",
       },
       { property: "og:title", content: "Kiana Naturopathy & Wellness Centre" },
       {
         property: "og:description",
-        content: "Heal naturally with personalised diet, yoga and natural therapies in Pune.",
+        content: "Heal naturally with personalised diet, yoga and natural therapies in Mumbai.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -276,7 +276,7 @@ function HomePage() {
               <div className="eyebrow">Sanctuary &amp; Therapies</div>
               <h2>Natural approaches for better health</h2>
               <p className="lead">
-                Kiana Naturopathy &amp; Wellness Centre is a naturopathy and wellness clinic in Pune.
+                Kiana Naturopathy &amp; Wellness Centre is a naturopathy and wellness clinic in Mumbai.
                 We combine diet therapy, yoga, hydrotherapy, mud therapy and herbal support into one
                 practical plan you can keep.
               </p>

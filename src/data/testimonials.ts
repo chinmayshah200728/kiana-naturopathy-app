@@ -5,7 +5,7 @@ export const testimonials: Testimonial[] = [
     "stars": 5,
     "quote": "Six months of diet therapy and yoga completely changed my mornings. My energy is steadier and my digestion no longer decides my day. The team never overpromised — they just kept me consistent.",
     "name": "Ananya Deshpande",
-    "city": "Pune"
+    "city": "Mumbai"
   },
   {
     "stars": 5,
@@ -23,7 +23,7 @@ export const testimonials: Testimonial[] = [
     "stars": 5,
     "quote": "As a physician I appreciate that they stay in their lane — supportive lifestyle care, coordinated with my prescriptions. That honesty is why I refer patients here.",
     "name": "Dr. Farhan Qureshi",
-    "city": "Pune"
+    "city": "Mumbai"
   },
   {
     "stars": 5,

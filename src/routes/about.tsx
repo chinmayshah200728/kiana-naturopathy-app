@@ -5,11 +5,11 @@ import { DISCLAIMER, PageHead } from "@/components/site/SiteLayout";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Our Clinic & Team — Kiana Naturopathy, Pune" },
+      { title: "About Our Clinic & Team — Kiana Naturopathy, Mumbai" },
       {
         name: "description",
         content:
-          "A naturopathy clinic in Pune since 2008. Meet our naturopaths, dietitian, yoga therapist and hydrotherapy team, and read the values we practise by.",
+          "A naturopathy clinic in Mumbai since 2008. Meet our naturopaths, dietitian, yoga therapist and hydrotherapy team, and read the values we practise by.",
       },
       { property: "og:title", content: "About Kiana Naturopathy & Wellness Centre" },
       { property: "og:description", content: "A clinic built on honest, practical care since 2008." },

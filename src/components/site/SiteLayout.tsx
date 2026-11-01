@@ -249,7 +249,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             <div>
               <h4>Visit &amp; Contact Us</h4>
               <p style={{ fontSize: ".92rem" }}>
-                2nd Floor, Green Leaf Arcade, FC Road, Shivajinagar, Pune 411005
+                Mumbai, Maharashtra, India
+                <br />
+                In-Clinic &amp; Online Consultations
                 <br />
                 Mon – Sat, 8:00 am – 7:00 pm
               </p>

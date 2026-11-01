@@ -3,7 +3,7 @@ import { products } from "@/data/products";
 import { Link } from "@tanstack/react-router";
 
 const SAMPLE_PURCHASES = [
-  { name: "Ananya D.", city: "Pune", item: "7-Day Gentle Detox Kit", time: "2 mins ago" },
+  { name: "Ananya D.", city: "Mumbai", item: "7-Day Gentle Detox Kit", time: "2 mins ago" },
   { name: "Dr. Farhan Q.", city: "Mumbai", item: "Ashwagandha Root Capsules", time: "5 mins ago" },
   { name: "Sneha K.", city: "Bengaluru", item: "Wild Multiflora Raw Forest Honey", time: "8 mins ago" },
   { name: "Rohan P.", city: "Nagpur", item: "Daily Immunity Kadha Mix", time: "12 mins ago" },

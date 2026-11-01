@@ -1491,7 +1491,7 @@ function AdminPage() {
                   id="address"
                   type="text"
                   required
-                  placeholder="e.g. FC Road, Shivajinagar, Pune 411005"
+                  placeholder="e.g. Bandra West, Mumbai 400050"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                 />

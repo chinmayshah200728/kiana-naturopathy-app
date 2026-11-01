@@ -5,11 +5,11 @@ import { DISCLAIMER, PageHead } from "@/components/site/SiteLayout";
 export const Route = createFileRoute("/naturopathy")({
   head: () => ({
     meta: [
-      { title: "What is Naturopathy? — Kiana Naturopathy, Pune" },
+      { title: "What is Naturopathy? — Kiana Naturopathy, Mumbai" },
       {
         name: "description",
         content:
-          "Naturopathy explained: six principles of natural healing, the therapies we use and how a consultation works at our Pune clinic.",
+          "Naturopathy explained: six principles of natural healing, the therapies we use and how a consultation works at our Mumbai clinic.",
       },
       { property: "og:title", content: "What is Naturopathy? — Kiana Naturopathy" },
       {

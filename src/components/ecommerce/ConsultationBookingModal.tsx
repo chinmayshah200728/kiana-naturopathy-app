@@ -25,7 +25,7 @@ export function ConsultationBookingModal() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [doctor, setDoctor] = useState(DOCTORS[0].name);
   const [service, setService] = useState(SERVICES[0]);
-  const [visitType, setVisitType] = useState<"In-Clinic Pune" | "Online Video Consultation">("Online Video Consultation");
+  const [visitType, setVisitType] = useState<"In-Clinic Mumbai" | "Online Video Consultation">("Online Video Consultation");
   const [date, setDate] = useState("2026-09-12");
   const [timeSlot, setTimeSlot] = useState(TIME_SLOTS[0]);
   
@@ -106,10 +106,10 @@ export function ConsultationBookingModal() {
                     </button>
                     <button
                       type="button"
-                      className={`btn ${visitType === "In-Clinic Pune" ? "btn-primary" : "btn-outline"}`}
-                      onClick={() => setVisitType("In-Clinic Pune")}
+                      className={`btn ${visitType === "In-Clinic Mumbai" ? "btn-primary" : "btn-outline"}`}
+                      onClick={() => setVisitType("In-Clinic Mumbai")}
                     >
-                      🏥 In-Clinic Pune Visit
+                      🏥 In-Clinic Mumbai Visit
                     </button>
                   </div>
                 </div>
