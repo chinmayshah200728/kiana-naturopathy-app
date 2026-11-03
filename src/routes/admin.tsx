@@ -80,15 +80,23 @@ function AdminPage() {
     }
   });
 
+  const MASTER_PASSWORD = "Kiana@2026";
+
   const [adminPasscode, setAdminPasscode] = useState(() => {
     try {
-      return window.localStorage.getItem("kiana_admin_passcode") || "kiana2026";
+      const stored = window.localStorage.getItem("kiana_admin_passcode");
+      if (!stored || stored === "kiana2026") {
+        window.localStorage.setItem("kiana_admin_passcode", MASTER_PASSWORD);
+        return MASTER_PASSWORD;
+      }
+      return stored;
     } catch {
-      return "kiana2026";
+      return MASTER_PASSWORD;
     }
   });
 
   const [passcodeInput, setPasscodeInput] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [showChangePasscodeModal, setShowChangePasscodeModal] = useState(false);
   const [newPasscode, setNewPasscode] = useState("");
@@ -96,7 +104,7 @@ function AdminPage() {
   // Login handler
   const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcodeInput === adminPasscode || passcodeInput === "kiana2026") {
+    if (passcodeInput === adminPasscode || passcodeInput === MASTER_PASSWORD) {
       setIsAdminAuthenticated(true);
       setAuthError(null);
       try {
@@ -439,16 +447,38 @@ function AdminPage() {
               <form onSubmit={handleAdminLogin}>
                 <div className="field" style={{ textAlign: "left", marginBottom: 16 }}>
                   <label htmlFor="adminpass" style={{ fontWeight: 700 }}>Admin Master Password *</label>
-                  <input
-                    id="adminpass"
-                    type="password"
-                    required
-                    autoFocus
-                    placeholder="Enter password (Default: kiana2026)"
-                    value={passcodeInput}
-                    onChange={(e) => setPasscodeInput(e.target.value)}
-                    style={{ fontSize: "1rem", padding: "12px 14px" }}
-                  />
+                  <div style={{ position: "relative" }}>
+                    <input
+                      id="adminpass"
+                      type={showPassword ? "text" : "password"}
+                      required
+                      autoFocus
+                      placeholder="Enter admin master password"
+                      value={passcodeInput}
+                      onChange={(e) => setPasscodeInput(e.target.value)}
+                      style={{ fontSize: "1rem", padding: "12px 42px 12px 14px", width: "100%" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: "absolute",
+                        right: 12,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "1.1rem",
+                        padding: 4,
+                        color: "#6B7280"
+                      }}
+                      title={showPassword ? "Hide password" : "Show password"}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? "🙈" : "👁️"}
+                    </button>
+                  </div>
                 </div>
                 {authError && (
                   <div className="notice" style={{ marginBottom: 16, background: "#FEE2E2", color: "#991B1B", fontWeight: 700, padding: "10px 14px", borderRadius: 8 }}>

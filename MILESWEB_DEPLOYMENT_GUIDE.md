@@ -127,4 +127,4 @@ sudo certbot --nginx -d kiananaturopathy.com -d www.kiananaturopathy.com
 ## 🔒 Post-Deployment Checklist
 - [ ] Test **Cash on Delivery** and **Instant UPI QR** checkout.
 - [ ] Verify **SSL (HTTPS)** is active and padlock is green in browser address bar.
-- [ ] Access the Admin Dashboard at `https://kiananaturopathy.com/admin` (Default password: `kiana2026`).
+- [ ] Access the Admin Dashboard at `https://kiananaturopathy.com/admin`.
