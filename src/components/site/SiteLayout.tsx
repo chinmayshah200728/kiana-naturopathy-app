@@ -8,13 +8,12 @@ import { WhatsAppOrderTrackerWidget } from "../ecommerce/WhatsAppOrderTrackerWid
 import { AIRemedyChatbotModal } from "../ecommerce/AIRemedyChatbotModal";
 
 const NAV = [
-  { to: "/", label: "Home" },
   { to: "/shop", label: "Shop" },
   { to: "/naturopathy", label: "Naturopathy" },
   { to: "/conditions", label: "Conditions" },
-  { to: "/blog", label: "Blog" },
+  { to: "/about", label: "About" },
   { to: "/testimonials", label: "Reviews" },
-  { to: "/about", label: "About Us" },
+  { to: "/blog", label: "Blog" },
   { to: "/faq", label: "FAQ" },
 ] as const;
 
@@ -23,34 +22,50 @@ export const DISCLAIMER =
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [showAnnouncement, setShowAnnouncement] = useState(true);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
   const { count } = useCart();
-  const { wishlistCount, setIsCartDrawerOpen, setIsSearchOpen, setIsBookingOpen, darkMode, toggleDarkMode } =
+  const { wishlistCount, setIsCartDrawerOpen, setIsSearchOpen, setIsBookingOpen } =
     useECommerce();
 
   return (
     <div className="site-body">
-      {/* Top Ticker Bar */}
-      <div className="top-announcement-bar">
-        <span>
-          🌿 <strong>FREE Shipping</strong> on all orders over ₹999 | Use Code <strong>KIANA10</strong> for 10% OFF!
-        </span>
-      </div>
+      {/* Slim, Subtle & Dismissible Announcement Bar */}
+      {showAnnouncement && (
+        <div className="top-announcement-bar">
+          <div className="announcement-content">
+            <span>Free shipping on orders over ₹999 | Use code <strong>KIANA10</strong> for 10% off</span>
+          </div>
+          <button
+            type="button"
+            className="announcement-dismiss-btn"
+            onClick={() => setShowAnnouncement(false)}
+            aria-label="Dismiss announcement"
+            title="Dismiss announcement"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
+      {/* Clean, Spacious & Sticky Editorial Header */}
       <header className="site">
         <div className="wrap bar">
           <Link className="brand" to="/">
-            <span className="leaf">🌿</span> Kiana Naturopathy
+            <span className="brand-crest">🌿</span>
+            <div className="brand-text">
+              <span className="brand-title">Kiana Naturopathy</span>
+              <span className="brand-sub">Wellness Centre · Mumbai</span>
+            </div>
           </Link>
 
-          {/* Desktop Navigation & Mobile Fullscreen Overlay Nav */}
+          {/* Desktop Navigation */}
           <nav className={`main ${open ? "open" : ""}`}>
             {NAV.map((item) => (
               <Link
                 key={item.label}
                 to={item.to}
-                activeOptions={{ exact: item.to === "/" }}
                 activeProps={{ className: "active" }}
                 onClick={() => setOpen(false)}
               >
@@ -58,40 +73,40 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               </Link>
             ))}
             <div className="mobile-only-drawer-actions">
-              <button className="btn btn-primary btn-block" onClick={() => { setOpen(false); setIsAIChatOpen(true); }} style={{ marginBottom: 8, background: "linear-gradient(135deg, #064E3B 0%, #047857 100%)" }}>
-                🤖 Ask AI Remedy Doctor
+              <button
+                type="button"
+                className="btn btn-primary btn-block"
+                onClick={() => { setOpen(false); setIsBookingOpen(true); }}
+              >
+                🩺 Book a Consultation
               </button>
-              <button className="btn btn-gold btn-block" onClick={() => { setOpen(false); setIsBookingOpen(true); }}>
-                🩺 Book Doctor Consultation
+              <button
+                type="button"
+                className="btn btn-light btn-block"
+                onClick={() => { setOpen(false); setIsAIChatOpen(true); }}
+                style={{ marginTop: 8 }}
+              >
+                🤖 Ask AI Remedy Guide
               </button>
-              <a href="tel:+919876543210" className="btn btn-light btn-block" style={{ marginTop: 8 }}>
-                📞 Call Helpline: +91 98765 43210
+              <a href="tel:+919876543210" className="btn btn-outline btn-block" style={{ marginTop: 8 }}>
+                📞 Helpline: +91 98765 43210
               </a>
             </div>
           </nav>
 
           <div className="head-actions">
-            {/* AI Remedy Guide Button (Desktop) */}
+            {/* Primary Action: Book a Consultation */}
             <button
-              className="btn btn-outline btn-sm desktop-only-btn"
-              onClick={() => setIsAIChatOpen(true)}
-              style={{ fontWeight: 700, borderColor: "var(--emerald-800)", color: "var(--emerald-900)", whiteSpace: "nowrap", flexShrink: 0 }}
-              title="AI Naturopathy Remedy Assistant"
+              type="button"
+              className="btn btn-primary btn-sm header-consult-btn"
+              onClick={() => setIsBookingOpen(true)}
             >
-              🤖 AI Remedy Guide
-            </button>
-            {/* Dark Mode Toggle */}
-            <button
-              className="head-icon-btn"
-              onClick={toggleDarkMode}
-              title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              aria-label="Toggle Theme"
-            >
-              {darkMode ? "☀️" : "🌙"}
+              Book a Consultation
             </button>
 
-            {/* Search Trigger */}
+            {/* Secondary Utility Icons */}
             <button
+              type="button"
               className="head-icon-btn"
               onClick={() => setIsSearchOpen(true)}
               title="Search products"
@@ -100,17 +115,15 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               🔍
             </button>
 
-            {/* Wishlist Link */}
             <Link
               className="head-icon-btn"
               to="/wishlist"
               title="View Wishlist"
               aria-label="Wishlist"
             >
-              🤍 {wishlistCount > 0 && <span className="cart-count">{wishlistCount}</span>}
+              🤍{wishlistCount > 0 && <span className="cart-count">{wishlistCount}</span>}
             </Link>
 
-            {/* Account Link */}
             <Link
               className="head-icon-btn"
               to="/account"
@@ -120,26 +133,22 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               👤
             </Link>
 
-            {/* Book Doctor (Desktop) */}
             <button
-              className="btn btn-gold btn-sm desktop-only-btn"
-              onClick={() => setIsBookingOpen(true)}
-              style={{ whiteSpace: "nowrap", flexShrink: 0 }}
-            >
-              Book Doctor 🩺
-            </button>
-
-            {/* Cart Trigger */}
-            <button
+              type="button"
               className="cart-link"
               onClick={() => setIsCartDrawerOpen(true)}
               aria-label="Open cart drawer"
             >
-              🛒 <span className="cart-text">Cart</span> {count > 0 && <span className="cart-count">{count}</span>}
+              🛒 <span className="cart-text">Cart</span>{count > 0 && <span className="cart-count">{count}</span>}
             </button>
 
             {/* Mobile Hamburger Menu Button */}
-            <button className="menu-btn" aria-label="Toggle Menu" onClick={() => setOpen((v) => !v)}>
+            <button
+              type="button"
+              className="menu-btn"
+              aria-label="Toggle Menu"
+              onClick={() => setOpen((v) => !v)}
+            >
               {open ? "✕" : "☰"}
             </button>
           </div>
