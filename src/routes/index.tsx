@@ -29,6 +29,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "geo.region", content: "IN-MH" },
       { name: "geo.placename", content: "Mumbai" },
+      { name: "google-site-verification", content: "E4Mv6laQ85waxOtFHX08x8vHFLN6AKhoe8cjNyVdojc" },
     ],
     scripts: [
       {
