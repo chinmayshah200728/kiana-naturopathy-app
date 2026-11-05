@@ -33,9 +33,9 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* Product Badges */}
         <div className="card-badges">
-          {!product.inStock && <span className="badge" style={{ background: "#DC2626", color: "#fff", fontWeight: 700 }}>Out of Stock</span>}
+          {!product.inStock && <span className="badge badge-stockout">Out of Stock</span>}
           {product.inStock && product.bestseller && <span className="badge badge-gold">Bestseller</span>}
-          {product.inStock && product.organic && <span className="badge badge-green">Pure &amp; Natural</span>}
+          {product.inStock && !product.bestseller && product.organic && <span className="badge badge-green">Pure &amp; Natural</span>}
           {product.inStock && discountPercent > 0 && <span className="badge badge-red">{discountPercent}% OFF</span>}
         </div>
 

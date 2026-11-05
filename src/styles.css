@@ -298,6 +298,7 @@ nav.main a.active::after {
 .badge-green { background: #E1F5E8; color: #0F5C2F; border: 1px solid #A8E3BC; }
 .badge-red { background: #FFE8E8; color: #B91C1C; border: 1px solid #FCA5A5; }
 .badge-accent { background: #EDE9FE; color: #5B21B6; border: 1px solid #DDD6FE; }
+.badge-stockout { background: #DC2626; color: #fff; border: 1px solid #B91C1C; font-weight: 700; }
 
 /* Luxury Cards */
 .card {
@@ -343,12 +344,17 @@ nav.main a.active::after {
 }
 .card-badges {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 10px;
+  left: 10px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   z-index: 2;
+  pointer-events: none;
+  max-width: calc(100% - 46px);
+}
+.card-badges .badge {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 .card-wishlist-btn {
   position: absolute;
@@ -1155,6 +1161,37 @@ button:active, a.btn:active, .chip:active, .card:active {
   .grid.g3, .grid.g4, .grid.g2 {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 10px !important;
+  }
+
+  /* Compact Non-Obstructive Badges on Mobile */
+  .card-badges {
+    top: 6px !important;
+    left: 6px !important;
+    gap: 3px !important;
+    max-width: calc(100% - 38px) !important;
+  }
+
+  .card-badges .badge {
+    padding: 2px 6px !important;
+    font-size: 0.6rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.02em !important;
+    line-height: 1.2 !important;
+    border-radius: 4px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Hide Pure & Natural on mobile product cards so product image is never covered */
+  .card-badges .badge-green {
+    display: none !important;
+  }
+
+  .card-wishlist-btn {
+    top: 6px !important;
+    right: 6px !important;
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.85rem !important;
   }
 
   .product-card .body {
