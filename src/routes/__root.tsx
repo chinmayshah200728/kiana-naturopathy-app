@@ -79,6 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "author", content: "Kiana Naturopathy" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "google-site-verification", content: "63cf967d2c9c1ec2" },
     ],
     links: [
       {
