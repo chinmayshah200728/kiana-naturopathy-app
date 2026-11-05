@@ -4,6 +4,9 @@ import { DISCLAIMER, PageHead } from "@/components/site/SiteLayout";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
+    links: [
+      { rel: "canonical", href: "https://www.kiananaturopathy.com/about" },
+    ],
     meta: [
       { title: "About Our Clinic & Team — Kiana Naturopathy, Mumbai" },
       {
@@ -11,10 +14,39 @@ export const Route = createFileRoute("/about")({
         content:
           "A naturopathy clinic in Mumbai since 2008. Meet our naturopaths, dietitian, yoga therapist and hydrotherapy team, and read the values we practise by.",
       },
-      { property: "og:title", content: "About Kiana Naturopathy & Wellness Centre" },
-      { property: "og:description", content: "A clinic built on honest, practical care since 2008." },
+      { property: "og:title", content: "About Kiana Naturopathy & Wellness Centre — Mumbai" },
+      { property: "og:description", content: "A clinic built on honest, practical care in Mumbai since 2008." },
+      { property: "og:url", content: "https://www.kiananaturopathy.com/about" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "geo.region", content: "IN-MH" },
+      { name: "geo.placename", content: "Mumbai" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          "name": "About Kiana Naturopathy & Wellness Centre",
+          "url": "https://www.kiananaturopathy.com/about",
+          "description": "Naturopathy clinic in Mumbai founded by Dr. Hiral Shah.",
+          "mainEntity": {
+            "@type": "HealthAndBeautyBusiness",
+            "name": "Kiana Naturopathy & Wellness Centre",
+            "founder": {
+              "@type": "Person",
+              "name": "Dr. Hiral Shah"
+            },
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Mumbai",
+              "addressRegion": "Maharashtra",
+              "addressCountry": "IN"
+            }
+          }
+        }),
+      },
     ],
   }),
   component: AboutPage,

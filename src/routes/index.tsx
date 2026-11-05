@@ -9,6 +9,9 @@ import { categories, products } from "@/data/products";
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [
+      { rel: "canonical", href: "https://www.kiananaturopathy.com/" },
+    ],
     meta: [
       { title: "Kiana Naturopathy & Wellness Centre — Heal Naturally in Mumbai" },
       {
@@ -16,13 +19,16 @@ export const Route = createFileRoute("/")({
         content:
           "Drug-free naturopathy care in Mumbai: personalised diet therapy, yoga, hydrotherapy and a practitioner-selected wellness shop.",
       },
-      { property: "og:title", content: "Kiana Naturopathy & Wellness Centre" },
+      { property: "og:title", content: "Kiana Naturopathy & Wellness Centre — Heal Naturally in Mumbai" },
       {
         property: "og:description",
-        content: "Heal naturally with personalised diet, yoga and natural therapies in Mumbai.",
+        content: "Drug-free naturopathy care in Mumbai: personalised diet, yoga and natural therapies.",
       },
+      { property: "og:url", content: "https://www.kiananaturopathy.com/" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "geo.region", content: "IN-MH" },
+      { name: "geo.placename", content: "Mumbai" },
     ],
     scripts: [
       {
@@ -43,6 +49,10 @@ export const Route = createFileRoute("/")({
             "@type": "Person",
             "name": "Dr. Hiral Shah",
             "jobTitle": "Chief Naturopath"
+          },
+          "areaServed": {
+            "@type": "City",
+            "name": "Mumbai"
           }
         }),
       },
