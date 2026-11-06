@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 
-import { ProductCard } from "@/components/site/ProductCard";
 import { DISCLAIMER } from "@/components/site/SiteLayout";
 import { RemedyQuizModal } from "@/components/ecommerce/RemedyQuizModal";
 import { conditions } from "@/data/conditions";
@@ -92,13 +91,42 @@ const BENEFITS = [
   { icon: "📈", title: "Measured, honest progress", text: "Two-weekly reviews with real markers, so you can see what is actually working." },
 ];
 
+const CARE_STEPS = [
+  {
+    step: "01",
+    icon: "📋",
+    title: "In-Depth Assessment",
+    badge: "45-Min Intake",
+    text: "We review your health history, daily routine, digestion, stress, sleep patterns, and medical reports.",
+  },
+  {
+    step: "02",
+    icon: "🥗",
+    title: "Root-Cause Protocol",
+    badge: "Custom Indian Plan",
+    text: "A practical food-first nutrition guide, therapeutic yoga routines, and pure herbal remedies built for your kitchen.",
+  },
+  {
+    step: "03",
+    icon: "💧",
+    title: "Natural Therapies",
+    badge: "Drug-Free Care",
+    text: "Targeted hydrotherapy, mud packs, and restorative daily habits that activate your body's innate self-healing.",
+  },
+  {
+    step: "04",
+    icon: "📈",
+    title: "Bi-Weekly Reviews",
+    badge: "Measured Results",
+    text: "Regular follow-ups with Dr. Hiral Shah to track measurable markers, refine your routine, and ensure lasting health.",
+  },
+];
+
 function HomePage() {
   const { setIsBookingOpen } = useECommerce();
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
-
-  const featured = products.filter((p) => p.featured || p.bestseller).slice(0, 4);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -226,23 +254,41 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ── FEATURED PRODUCTS ── */}
-      <section className="featured-products-section">
+      {/* ── HOW IT WORKS: PATIENT CARE JOURNEY (replaces Featured Remedies) ── */}
+      <section className="care-journey-section">
         <div className="wrap">
           <div className="center">
-            <span className="eyebrow">Bestsellers</span>
-            <h2>Practitioner-selected remedies</h2>
+            <span className="eyebrow">How It Works</span>
+            <h2>Your 4-step path to natural healing</h2>
+            <p className="lead">
+              Personalised, drug-free naturopathy care designed around your life — working respectfully alongside your conventional medical treatment.
+            </p>
           </div>
 
-          <div className="grid g4" style={{ marginTop: 32 }}>
-            {featured.map((p) => (
-              <ProductCard product={p} key={p.slug} />
+          <div className="care-steps-grid">
+            {CARE_STEPS.map((s) => (
+              <div key={s.step} className="care-step-card">
+                <div className="care-step-top">
+                  <span className="care-step-number">{s.step}</span>
+                  <span className="care-step-icon">{s.icon}</span>
+                </div>
+                <h3>{s.title}</h3>
+                <span className="care-step-badge">{s.badge}</span>
+                <p>{s.text}</p>
+              </div>
             ))}
           </div>
 
-          <div className="center" style={{ marginTop: 32 }}>
-            <Link className="btn btn-primary btn-lg" to="/shop">
-              View All Products →
+          <div className="care-journey-actions">
+            <button
+              type="button"
+              className="btn btn-primary btn-lg"
+              onClick={() => setIsBookingOpen(true)}
+            >
+              Book a Consultation 🩺
+            </button>
+            <Link className="btn btn-outline btn-lg" to="/naturopathy">
+              Learn More About Our Care →
             </Link>
           </div>
         </div>

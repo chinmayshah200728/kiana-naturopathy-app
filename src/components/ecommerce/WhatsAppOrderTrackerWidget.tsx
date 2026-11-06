@@ -79,17 +79,7 @@ export function WhatsAppOrderTrackerWidget() {
   return (
     <>
       {/* Floating Trigger Button */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 24,
-          right: 24,
-          zIndex: 9990,
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-        }}
-      >
+      <div className="wa-tracker-trigger-wrap">
         {!isOpen && (
           <div
             style={{

@@ -195,18 +195,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         <span className="ai-float-text">Ask AI Doctor</span>
       </button>
 
-      {/* Floating WhatsApp CTA */}
-      <a
-        className="wa-float"
-        href="https://wa.me/919876543210?text=Hello%20Kiana%20Naturopathy%2C%20I%20have%20a%20question%20about%20your%20products."
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Chat on WhatsApp"
-        title="Chat with Naturopath on WhatsApp"
-      >
-        💬
-      </a>
-
       {/* Footer */}
       <footer className="site">
         <div className="wrap">
